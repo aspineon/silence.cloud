@@ -1,6 +1,6 @@
 name := """silence.cloud"""
 
-version := "1.0-SNAPSHOT"
+version := "1.0.1-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 
@@ -13,6 +13,7 @@ libraryDependencies += "org.hibernate" % "hibernate-entitymanager" % "5.2.12.Fin
 // Test Database
 libraryDependencies += "com.h2database" % "h2" % "1.4.194"
 libraryDependencies += "org.flywaydb" %% "flyway-play" % "4.0.0"
+libraryDependencies += evolutions
 // Testing libraries for dealing with CompletionStage...
 libraryDependencies += "org.assertj" % "assertj-core" % "3.6.2" % Test
 libraryDependencies += "org.awaitility" % "awaitility" % "2.0.0" % Test
