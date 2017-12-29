@@ -9,45 +9,63 @@ import javax.persistence.Table;
 import java.util.Date;
 import java.util.List;
 
-@Table(name = "status")
 @Entity
-public class StatusModel extends BaseModel {
+@Table(name = "status")
+public class StatusModel extends BaseModel implements StatusModelInterface {
 
-    @Column(name="status_name", length = 255, nullable = false, unique = true)
+    @Column(name = "status_name", length = 255, nullable = false, unique = true)
     @Constraints.Required
     @Constraints.MaxLength(255)
     public String name;
 
-    public static Finder<Long, StatusModel> find = new Finder<Long, StatusModel>(StatusModel.class);
+    public static Finder<Long, StatusModel> FINDER = new Finder<Long, StatusModel>(StatusModel.class);
 
-    public static void createStatus(String name){
+    @Override
+    public void createStatus(String name) {
         StatusModel statusModel = new StatusModel();
+        statusModel.id = System.currentTimeMillis();
         statusModel.name = name;
         statusModel.createdAt = new Date();
-        statusModel.updatedAt = new Date();
+        statusModel.updateAt = new Date();
         statusModel.save();
     }
 
-    public static void updateStatus(Long id, String name){
-        StatusModel statusModel = find.byId(id);
+    @Override
+    public void updateStatus(Long id, String name) {
+        StatusModel statusModel = StatusModel.FINDER.ref(id);
         statusModel.name = name;
-        statusModel.updatedAt = new Date();
+        statusModel.updateAt = new Date();
         statusModel.update();
     }
 
-    public static void deleteStatus(Long id){
-        StatusModel.find.ref(id).delete();
+    @Override
+    public void deleteStatus(Long id) {
+        StatusModel statusModel = StatusModel.FINDER.ref(id);
+        statusModel.delete();
     }
 
-    public static List<StatusModel> findAllStatuses(){
-        return find.all();
+    @Override
+    public List<StatusModel> findAllStatuses() {
+        return StatusModel.FINDER.all();
     }
 
-    public static StatusModel findById(Long id){
-        return find.ref(id);
+    @Override
+    public StatusModel findStatusById(Long id) {
+        try {
+            return StatusModel.FINDER.ref(id);
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public static StatusModel findByName(String name){
-        return find.query().where().eq("name", name).findOne();
+    @Override
+    public StatusModel findStatusByName(String name) {
+        try {
+            return StatusModel.FINDER.query().where().eq("name", name).findOne();
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }
