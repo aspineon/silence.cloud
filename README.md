@@ -82,14 +82,14 @@ There are several demonstration files available in this template.
     
   - **repositories.core.StatusRepositoryInterface.java**
       
-        StatusRepositoryInterface implements abstract method of 
-        StatusRepository.
+    StatusRepositoryInterface implements abstract method of 
+    StatusRepository.
    
   - **repositories.core.RoleRepository.java**
   
     RoleRepository implements non-blocking database crud operations 
     of RoleModel.
     
-    - **repositories.core.RoleRepositoryInterface.java**
+   - **repositories.core.RoleRepositoryInterface.java**
     
-      RoleRepositoryInterface implements abstract method of RoleRepository.
+     RoleRepositoryInterface implements abstract method of RoleRepository.
