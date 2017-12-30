@@ -21,11 +21,11 @@ public class StatusModelTest extends WithApplication implements StatusModelInter
 
     static Database database;
 
-    private static Long statusId = System.currentTimeMillis();
+    private final static Long statusId = System.currentTimeMillis();
 
-    private static String active = "active";
-    private String inactive = "inactive";
-    private String frozen = "frozen";
+    private final static String firstNewStatus = "newStatus";
+    private final String  secondNewStatus = "secondNewStatus";
+    private final String updatedStatus = "updatedStatus";
 
     private int firstExceptedSize = 1;
     private int secondExceptedSize = 2;
@@ -46,46 +46,10 @@ public class StatusModelTest extends WithApplication implements StatusModelInter
 
             StatusModel statusModel = new StatusModel();
             statusModel.id = statusId;
-            statusModel.name = active;
+            statusModel.name = firstNewStatus;
             statusModel.createdAt = new Date();
             statusModel.updateAt = new Date();
             statusModel.save();
-        });
-
-    }
-
-    @Test
-    public void findAllStatusesTest() throws Exception {
-        running(fakeApplication(inMemoryDatabase("test")), () ->{
-            assertEquals(firstExceptedSize, findAllStatuses().size());
-        });
-    }
-
-    @Test
-    public void findStatusByIdTest() throws Exception {
-        running(fakeApplication(inMemoryDatabase("test")), () -> {
-            assertNotNull(findStatusById(statusId));
-        });
-    }
-
-    @Test
-    public void findStatusByNameTest() throws Exception {
-        running(fakeApplication(inMemoryDatabase("test")), () -> {
-            assertNotNull(findStatusByName(active));
-        });
-    }
-
-    @Test
-    public void statusModelTest() throws Exception {
-        running(fakeApplication(inMemoryDatabase("test")), () -> {
-            createStatus(inactive);
-            assertNotNull(findStatusByName(inactive));
-            assertEquals(secondExceptedSize, findAllStatuses().size());
-            updateStatus(findStatusByName(inactive).id, frozen);
-            assertNotNull(findStatusByName(frozen));
-            deleteStatus(findStatusByName(frozen).id);
-            assertNull(findStatusByName(frozen));
-            assertEquals(firstExceptedSize, findAllStatuses().size());
         });
     }
 
@@ -97,39 +61,40 @@ public class StatusModelTest extends WithApplication implements StatusModelInter
         });
     }
 
-    @Override
-    public void createStatus(String name) {
-        StatusModel statusModel = new StatusModel();
-        statusModel.createStatus(name);
+    @Test
+    public void findAllStatusesTest() throws Exception {
+        running(fakeApplication(inMemoryDatabase("test")), () ->{
+            assertEquals(firstExceptedSize, StatusModelInterface.super.findAllStatuses().size());
+        });
     }
 
-    @Override
-    public void updateStatus(Long id, String name) {
-        StatusModel statusModel = new StatusModel();
-        statusModel.updateStatus(id, name);
+    @Test
+    public void findStatusByIdTest() throws Exception {
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+            assertNotNull(StatusModelInterface.super.findStatusById(statusId));
+        });
     }
 
-    @Override
-    public void deleteStatus(Long id) {
-        StatusModel statusModel = new StatusModel();
-        statusModel.deleteStatus(id);
+    @Test
+    public void findStatusByNameTest() throws Exception {
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+            assertNotNull(StatusModelInterface.super.findStatusByName(firstNewStatus));
+        });
     }
 
-    @Override
-    public List<StatusModel> findAllStatuses() {
-        StatusModel statusModel = new StatusModel();
-        return statusModel.findAllStatuses();
-    }
-
-    @Override
-    public StatusModel findStatusById(Long id) {
-        StatusModel statusModel = new StatusModel();
-        return statusModel.findStatusById(id);
-    }
-
-    @Override
-    public StatusModel findStatusByName(String name) {
-        StatusModel statusModel = new StatusModel();
-        return statusModel.findStatusByName(name);
+    @Test
+    public void statusModelTest() throws Exception {
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+            StatusModelInterface.super.createStatus(secondNewStatus);
+            assertNotNull(StatusModelInterface.super.findStatusByName(secondNewStatus));
+            assertEquals(secondExceptedSize, StatusModelInterface.super.findAllStatuses().size());
+            StatusModelInterface.super.updateStatus(
+                    StatusModelInterface.super.findStatusByName(secondNewStatus).id, updatedStatus
+            );
+            assertNotNull(StatusModelInterface.super.findStatusByName(updatedStatus));
+            StatusModelInterface.super.deleteStatus(StatusModelInterface.super.findStatusByName(updatedStatus).id);
+            assertNull(StatusModelInterface.super.findStatusByName(updatedStatus));
+            assertEquals(firstExceptedSize, StatusModelInterface.super.findAllStatuses().size());
+        });
     }
 }
