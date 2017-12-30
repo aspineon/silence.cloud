@@ -65,11 +65,11 @@ There are several demonstration files available in this template.
  
    StatusModelCrud interface implements sample crud operations of StatusModel.
    
-  - **models.core.RoleModel.java**
+ - **models.core.RoleModel.java**
   
    RoleModel implements application roles.
    
-  - **models.core.RoleModelCrud.java**
+ - **models.core.RoleModelCrud.java**
   
    RoleModelCrud interface implements sample crud operatios of RoleModel.
    
