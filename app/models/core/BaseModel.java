@@ -4,6 +4,7 @@ import io.ebean.Model;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -12,6 +13,7 @@ import java.util.Date;
 @MappedSuperclass
 public class BaseModel extends Model {
 
+    @Column(name = "id")
     @Id
     @GeneratedValue
     public Long id;

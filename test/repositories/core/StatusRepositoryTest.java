@@ -1,13 +1,18 @@
 package repositories.core;
 
+import com.google.common.collect.ImmutableMap;
 import models.core.StatusModel;
-import models.core.StatusModelInterface;
+import models.core.StatusModelCrud;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import play.Application;
+import play.db.Database;
+import play.db.Databases;
+import play.db.evolutions.Evolutions;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.test.WithApplication;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -16,8 +21,13 @@ import java.util.concurrent.TimeUnit;
 import static org.awaitility.Awaitility.await;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.inMemoryDatabase;
+import static play.test.Helpers.running;
 
-public class StatusRepositoryTest extends WithApplication implements StatusModelInterface {
+public class StatusRepositoryTest extends WithApplication implements StatusModelCrud {
+
+    private static Database database;
 
     private final String newStatus = "newStatus";
     private final String updatedStatus = "updateStatus";
@@ -27,6 +37,22 @@ public class StatusRepositoryTest extends WithApplication implements StatusModel
     @Override
     protected Application provideApplication() {
         return new GuiceApplicationBuilder().build();
+    }
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+            database = Databases.inMemory(
+                    "mydatabase",
+                    ImmutableMap.of(
+                            "MODE", "MYSQL"
+                    ),
+                    ImmutableMap.of(
+                            "logStatements", true
+                    )
+            );
+            Evolutions.applyEvolutions(database);
+        });
     }
 
     @Test
@@ -47,7 +73,7 @@ public class StatusRepositoryTest extends WithApplication implements StatusModel
             });
         });
 
-        StatusModel statusModel = StatusModelInterface.super.findStatusByName(newStatus);
+        StatusModel statusModel = StatusModelCrud.super.findStatusByName(newStatus);
         final CompletionStage<Optional<StatusModel>> statusByIdStage = statusRepository.findStatusById(statusModel.id);
         await().atMost(1, TimeUnit.SECONDS).until(() -> {
             assertThat(statusByIdStage.toCompletableFuture()).isCompletedWithValueMatching(status -> {
@@ -76,6 +102,18 @@ public class StatusRepositoryTest extends WithApplication implements StatusModel
             assertThat(deleteStatus.toCompletableFuture()).isCompletedWithValueMatching(status -> {
                 return !status.isPresent();
             });
+        });
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+            List<StatusModel> statuses  = StatusModel.FINDER.all();
+            for (StatusModel status: statuses){
+                status.delete();
+            }
+            Evolutions.cleanupEvolutions(database);
+            database.shutdown();
         });
     }
 }

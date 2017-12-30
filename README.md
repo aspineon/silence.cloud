@@ -1,6 +1,4 @@
-[<img src="https://img.shields.io/travis/playframework/play-java-starter-example.svg"/>](https://travis-ci.org/playframework/play-java-starter-example)
-
-# play-java-starter-example
+# Silence.Cloud
 
 This is a starter application that shows how Play works.  Please see the documentation at https://www.playframework.com/documentation/latest/Home for more details.
 
@@ -51,3 +49,47 @@ There are several demonstration files available in this template.
 - ExampleFilter.java
 
   A simple filter that adds a header to every response.
+  
+## Models and cruds
+
+ - **models.core.BaseModel.java**
+   
+   BaseModel contains only id, createdAt and updatedAt definitions. BaseModel has 
+   been annotated a MappedSuperclass.
+   
+ - **models.core.StatusModel.java**
+   
+   StatusModel implements applications statuses.
+    
+ - **models.core.StatusModelCrud.java**
+ 
+   StatusModelCrud interface implements sample crud operations of StatusModel.
+   
+  - **models.core.RoleModel.java**
+  
+   RoleModel implements application roles.
+   
+  - **models.core.RoleModelCrud.java**
+  
+   RoleModelCrud interface implements sample crud operatios of RoleModel.
+   
+## Repositories
+
+  - **repositories.core.StatusRepository.java**
+  
+    StatusRepository implements non-blocking database crud operations of 
+    StatusModel.
+    
+  - **repositories.core.StatusRepositoryInterface.java**
+      
+        StatusRepositoryInterface implements abstract method of 
+        StatusRepository.
+   
+  - **repositories.core.RoleRepository.java**
+  
+    RoleRepository implements non-blocking database crud operations 
+    of RoleModel.
+    
+    - **repositories.core.RoleRepositoryInterface.java**
+    
+      RoleRepositoryInterface implements abstract method of RoleRepository.

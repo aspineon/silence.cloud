@@ -17,7 +17,7 @@ import static play.test.Helpers.inMemoryDatabase;
 import static play.test.Helpers.running;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class StatusModelTest extends WithApplication implements StatusModelInterface {
+public class StatusModelCrudTest extends WithApplication implements StatusModelCrud {
 
     static Database database;
 
@@ -56,6 +56,11 @@ public class StatusModelTest extends WithApplication implements StatusModelInter
     @AfterClass
     public static void tearDown() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
+            List<StatusModel> statuses  = StatusModel.FINDER.all();
+            for (StatusModel status: statuses){
+                status.delete();
+            }
+
             Evolutions.cleanupEvolutions(database);
             database.shutdown();
         });
@@ -64,37 +69,37 @@ public class StatusModelTest extends WithApplication implements StatusModelInter
     @Test
     public void findAllStatusesTest() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () ->{
-            assertEquals(firstExceptedSize, StatusModelInterface.super.findAllStatuses().size());
+            assertEquals(firstExceptedSize, StatusModelCrud.super.findAllStatuses().size());
         });
     }
 
     @Test
     public void findStatusByIdTest() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            assertNotNull(StatusModelInterface.super.findStatusById(statusId));
+            assertNotNull(StatusModelCrud.super.findStatusById(statusId));
         });
     }
 
     @Test
     public void findStatusByNameTest() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            assertNotNull(StatusModelInterface.super.findStatusByName(firstNewStatus));
+            assertNotNull(StatusModelCrud.super.findStatusByName(firstNewStatus));
         });
     }
 
     @Test
     public void statusModelTest() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            StatusModelInterface.super.createStatus(secondNewStatus);
-            assertNotNull(StatusModelInterface.super.findStatusByName(secondNewStatus));
-            assertEquals(secondExceptedSize, StatusModelInterface.super.findAllStatuses().size());
-            StatusModelInterface.super.updateStatus(
-                    StatusModelInterface.super.findStatusByName(secondNewStatus).id, updatedStatus
+            StatusModelCrud.super.createStatus(secondNewStatus);
+            assertNotNull(StatusModelCrud.super.findStatusByName(secondNewStatus));
+            assertEquals(secondExceptedSize, StatusModelCrud.super.findAllStatuses().size());
+            StatusModelCrud.super.updateStatus(
+                    StatusModelCrud.super.findStatusByName(secondNewStatus).id, updatedStatus
             );
-            assertNotNull(StatusModelInterface.super.findStatusByName(updatedStatus));
-            StatusModelInterface.super.deleteStatus(StatusModelInterface.super.findStatusByName(updatedStatus).id);
-            assertNull(StatusModelInterface.super.findStatusByName(updatedStatus));
-            assertEquals(firstExceptedSize, StatusModelInterface.super.findAllStatuses().size());
+            assertNotNull(StatusModelCrud.super.findStatusByName(updatedStatus));
+            StatusModelCrud.super.deleteStatus(StatusModelCrud.super.findStatusByName(updatedStatus).id);
+            assertNull(StatusModelCrud.super.findStatusByName(updatedStatus));
+            assertEquals(firstExceptedSize, StatusModelCrud.super.findAllStatuses().size());
         });
     }
 }

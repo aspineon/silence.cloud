@@ -5,7 +5,7 @@ import io.ebean.Ebean;
 import java.util.Date;
 import java.util.List;
 
-public interface StatusModelInterface {
+public interface StatusModelCrud {
 
     default void createStatus(String name){
         StatusModel statusModel = new StatusModel();

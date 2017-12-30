@@ -5,3 +5,4 @@ INSERT INTO status(id, name, created_at, updated_at) VALUES (4, "banned", NOW(),
 INSERT INTO status(id, name, created_at, updated_at) VALUES (5, "blocked", NOW(), NOW());
 INSERT INTO status(id, name, created_at, updated_at) VALUES (6, "online", NOW(), NOW());
 INSERT INTO status(id, name, created_at, updated_at) VALUES (7, "offline", NOW(), NOW());
+
