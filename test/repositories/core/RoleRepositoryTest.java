@@ -1,6 +1,8 @@
 package repositories.core;
 
 import com.google.common.collect.ImmutableMap;
+import helpers.DefaultRoles;
+import helpers.DefaultStatuses;
 import models.core.RoleModel;
 import models.core.RoleModelCrud;
 import models.core.StatusModel;
@@ -29,16 +31,16 @@ public class RoleRepositoryTest extends WithApplication implements RoleModelCrud
 
     private static Database database;
 
-    private static final Long firstStatusId = 100L;
-    private static final Long secondStatusId = 101L;
+    private static final Long firstStatusId = 1L;
+    private static final Long secondStatusId = 2L;
 
     private final String newRoleName = "newRole";
     private final String updatedRoleName = "updatedRole";
 
-    private static final String firstStatusName = "firstStatus";
-    private static final String secondStatusName = "secondStatus";
+    private static DefaultStatuses defaultStatuses = new DefaultStatuses();
+    private static DefaultRoles defaultRoles = new DefaultRoles();
 
-    private int expectedSize = 1;
+    private int expectedSize = 14;
 
     @Override
     protected Application provideApplication() {
@@ -58,20 +60,8 @@ public class RoleRepositoryTest extends WithApplication implements RoleModelCrud
                     )
             );
             Evolutions.applyEvolutions(database);
-
-            StatusModel statusModel = new StatusModel();
-            statusModel.id = firstStatusId;
-            statusModel.name = firstStatusName;
-            statusModel.createdAt = new Date();
-            statusModel.updateAt = new Date();
-            statusModel.save();
-
-            StatusModel statusModel2 = new StatusModel();
-            statusModel.id = secondStatusId;
-            statusModel.name = secondStatusName;
-            statusModel.createdAt = new Date();
-            statusModel.updateAt = new Date();
-            statusModel.save();
+            defaultStatuses.createDefaultStatuses();
+            defaultRoles.createRoles();
         });
     }
 
@@ -145,15 +135,8 @@ public class RoleRepositoryTest extends WithApplication implements RoleModelCrud
     @AfterClass
     public static void tearDown() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            List<RoleModel> roles = RoleModel.FINDER.all();
-            for(RoleModel role: roles){
-                role.delete();
-            }
-
-            List<StatusModel> statuses  = StatusModel.FINDER.all();
-            for (StatusModel status: statuses){
-                status.delete();
-            }
+            defaultRoles.deleteRoles();
+            defaultStatuses.deleteDefaultStatuses();
 
             Evolutions.cleanupEvolutions(database);
             database.shutdown();
