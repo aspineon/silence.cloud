@@ -1,6 +1,7 @@
 package models.core;
 
 import com.google.common.collect.ImmutableMap;
+import helpers.DefaultStatuses;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
 import play.db.evolutions.Evolutions;
@@ -21,14 +22,16 @@ public class StatusModelCrudTest extends WithApplication implements StatusModelC
 
     static Database database;
 
-    private final static Long statusId = System.currentTimeMillis();
+    private static final DefaultStatuses defaultStatuses = new DefaultStatuses();
 
-    private final static String firstNewStatus = "newStatus";
-    private final String  secondNewStatus = "secondNewStatus";
+    private final Long statusId = 1L;
+    private final String statusName = "active";
+
+    private final String newStatus = "newStatus";
     private final String updatedStatus = "updatedStatus";
 
-    private int firstExceptedSize = 1;
-    private int secondExceptedSize = 2;
+    private int firstExceptedSize = 7;
+    private int secondExceptedSize = 8;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -43,23 +46,14 @@ public class StatusModelCrudTest extends WithApplication implements StatusModelC
                     )
             );
             Evolutions.applyEvolutions(database);
-
-            StatusModel statusModel = new StatusModel();
-            statusModel.id = statusId;
-            statusModel.name = firstNewStatus;
-            statusModel.createdAt = new Date();
-            statusModel.updateAt = new Date();
-            statusModel.save();
+            defaultStatuses.createDefaultStatuses();
         });
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            List<StatusModel> statuses  = StatusModel.FINDER.all();
-            for (StatusModel status: statuses){
-                status.delete();
-            }
+            defaultStatuses.deleteDefaultStatuses();
 
             Evolutions.cleanupEvolutions(database);
             database.shutdown();
@@ -83,18 +77,18 @@ public class StatusModelCrudTest extends WithApplication implements StatusModelC
     @Test
     public void findStatusByNameTest() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            assertNotNull(StatusModelCrud.super.findStatusByName(firstNewStatus));
+            assertNotNull(StatusModelCrud.super.findStatusByName(statusName));
         });
     }
 
     @Test
     public void statusModelTest() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            StatusModelCrud.super.createStatus(secondNewStatus);
-            assertNotNull(StatusModelCrud.super.findStatusByName(secondNewStatus));
+            StatusModelCrud.super.createStatus(newStatus);
+            assertNotNull(StatusModelCrud.super.findStatusByName(newStatus));
             assertEquals(secondExceptedSize, StatusModelCrud.super.findAllStatuses().size());
             StatusModelCrud.super.updateStatus(
-                    StatusModelCrud.super.findStatusByName(secondNewStatus).id, updatedStatus
+                    StatusModelCrud.super.findStatusByName(newStatus).id, updatedStatus
             );
             assertNotNull(StatusModelCrud.super.findStatusByName(updatedStatus));
             StatusModelCrud.super.deleteStatus(StatusModelCrud.super.findStatusByName(updatedStatus).id);

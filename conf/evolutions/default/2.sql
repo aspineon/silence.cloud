@@ -6,3 +6,16 @@ INSERT INTO status(id, name, created_at, updated_at) VALUES (5, "blocked", NOW()
 INSERT INTO status(id, name, created_at, updated_at) VALUES (6, "online", NOW(), NOW());
 INSERT INTO status(id, name, created_at, updated_at) VALUES (7, "offline", NOW(), NOW());
 
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (1, "office", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (2, "partners", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (3, "counsel", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (4, "practise", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (5, "junior_associate", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (6, "associate", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (7, "senior_associate", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (8, "auditors", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (9, "marketing", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (10, "sales", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (11, "technical", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (12, "it", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (13, "hr", 1, NOW(), NOW());

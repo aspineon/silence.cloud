@@ -76,7 +76,7 @@ public class RoleRepositoryTest extends WithApplication implements RoleModelCrud
     }
 
     @Test
-    public void statusRepositoryTest() throws Exception {
+    public void roleRepositoryTest() throws Exception {
         final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
 
         final CompletionStage<Optional<RoleModel>> createStage = roleRepository.createRole(newRoleName, firstStatusId);

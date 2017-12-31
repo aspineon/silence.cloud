@@ -1,6 +1,7 @@
 package repositories.core;
 
 import com.google.common.collect.ImmutableMap;
+import helpers.DefaultStatuses;
 import models.core.StatusModel;
 import models.core.StatusModelCrud;
 import org.junit.AfterClass;
@@ -29,10 +30,12 @@ public class StatusRepositoryTest extends WithApplication implements StatusModel
 
     private static Database database;
 
+    private static final DefaultStatuses defaultStatuses = new DefaultStatuses();
+
     private final String newStatus = "newStatus";
     private final String updatedStatus = "updateStatus";
 
-    private int expectedSize = 1;
+    private int expectedSize = 8;
 
     @Override
     protected Application provideApplication() {
@@ -52,6 +55,16 @@ public class StatusRepositoryTest extends WithApplication implements StatusModel
                     )
             );
             Evolutions.applyEvolutions(database);
+            defaultStatuses.createDefaultStatuses();
+        });
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+            defaultStatuses.deleteDefaultStatuses();
+            Evolutions.cleanupEvolutions(database);
+            database.shutdown();
         });
     }
 
@@ -102,18 +115,6 @@ public class StatusRepositoryTest extends WithApplication implements StatusModel
             assertThat(deleteStatus.toCompletableFuture()).isCompletedWithValueMatching(status -> {
                 return !status.isPresent();
             });
-        });
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        running(fakeApplication(inMemoryDatabase("test")), () -> {
-            List<StatusModel> statuses  = StatusModel.FINDER.all();
-            for (StatusModel status: statuses){
-                status.delete();
-            }
-            Evolutions.cleanupEvolutions(database);
-            database.shutdown();
         });
     }
 }
