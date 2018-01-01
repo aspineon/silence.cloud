@@ -9,24 +9,24 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * models.core.RoleModel.java
+ * models.core.ModuleModel.java
  * <p>
- * Model of application roles.
+ * Model of application modules.
  */
-@Table(name = "role")
+@Table(name = "module")
 @Entity
-public class RoleModel extends BaseModel {
+public class ModuleModel extends BaseModel {
 
-    @ManyToOne
     @Column(name = "status_id")
+    @ManyToOne
     @Constraints.Required
     public StatusModel status;
 
-    @Column(name = "role_name", length = 255, nullable = false, unique = true)
+    @Column(name = "module_name")
     @Constraints.Required
     @Constraints.MaxLength(255)
     public String name;
 
-    public static Finder<Long, RoleModel> FINDER = new Finder<Long, RoleModel>(RoleModel.class);
+    public static Finder<Long, ModuleModel> FINDER = new Finder<Long, ModuleModel>(ModuleModel.class);
 
 }

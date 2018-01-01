@@ -1,16 +1,8 @@
 package models.core;
 
-import com.google.common.collect.ImmutableMap;
-import helpers.DefaultStatuses;
+import helpers.BeforeAndAfterTest;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
-import play.db.evolutions.Evolutions;
-import play.db.Database;
-import play.db.Databases;
-import play.test.WithApplication;
-
-import java.util.Date;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static play.test.Helpers.fakeApplication;
@@ -18,11 +10,7 @@ import static play.test.Helpers.inMemoryDatabase;
 import static play.test.Helpers.running;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class StatusModelCrudTest extends WithApplication implements StatusModelCrud {
-
-    static Database database;
-
-    private static final DefaultStatuses defaultStatuses = new DefaultStatuses();
+public class StatusModelCrudTest extends BeforeAndAfterTest implements StatusModelCrud {
 
     private final Long statusId = 1L;
     private final String statusName = "active";
@@ -32,33 +20,6 @@ public class StatusModelCrudTest extends WithApplication implements StatusModelC
 
     private int firstExceptedSize = 7;
     private int secondExceptedSize = 8;
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        running(fakeApplication(inMemoryDatabase("test")), () -> {
-            database = Databases.inMemory(
-                    "mydatabase",
-                    ImmutableMap.of(
-                            "MODE", "MYSQL"
-                    ),
-                    ImmutableMap.of(
-                            "logStatements", true
-                    )
-            );
-            Evolutions.applyEvolutions(database);
-            defaultStatuses.createDefaultStatuses();
-        });
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        running(fakeApplication(inMemoryDatabase("test")), () -> {
-            defaultStatuses.deleteDefaultStatuses();
-
-            Evolutions.cleanupEvolutions(database);
-            database.shutdown();
-        });
-    }
 
     @Test
     public void findAllStatusesTest() throws Exception {
@@ -84,14 +45,15 @@ public class StatusModelCrudTest extends WithApplication implements StatusModelC
     @Test
     public void statusModelTest() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            StatusModelCrud.super.createStatus(newStatus);
+            assertNotNull(StatusModelCrud.super.createStatus(newStatus));
             assertNotNull(StatusModelCrud.super.findStatusByName(newStatus));
             assertEquals(secondExceptedSize, StatusModelCrud.super.findAllStatuses().size());
-            StatusModelCrud.super.updateStatus(
-                    StatusModelCrud.super.findStatusByName(newStatus).id, updatedStatus
+            assertNotNull(
+                    StatusModelCrud.super.updateStatus(StatusModelCrud.super
+                            .findStatusByName(newStatus).id, updatedStatus)
             );
             assertNotNull(StatusModelCrud.super.findStatusByName(updatedStatus));
-            StatusModelCrud.super.deleteStatus(StatusModelCrud.super.findStatusByName(updatedStatus).id);
+            assertNotNull(StatusModelCrud.super.deleteStatus(StatusModelCrud.super.findStatusByName(updatedStatus).id));
             assertNull(StatusModelCrud.super.findStatusByName(updatedStatus));
             assertEquals(firstExceptedSize, StatusModelCrud.super.findAllStatuses().size());
         });

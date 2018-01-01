@@ -1,18 +1,11 @@
 package repositories.core;
 
-import com.google.common.collect.ImmutableMap;
-import helpers.DefaultStatuses;
+import helpers.BeforeAndAfterTest;
 import models.core.StatusModel;
 import models.core.StatusModelCrud;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import play.Application;
-import play.db.Database;
-import play.db.Databases;
-import play.db.evolutions.Evolutions;
 import play.inject.guice.GuiceApplicationBuilder;
-import play.test.WithApplication;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,16 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
-import static play.test.Helpers.fakeApplication;
-import static play.test.Helpers.inMemoryDatabase;
-import static play.test.Helpers.running;
 
-public class StatusRepositoryTest extends WithApplication implements StatusModelCrud {
-
-    private static Database database;
-
-    private static final DefaultStatuses defaultStatuses = new DefaultStatuses();
+public class StatusRepositoryTest extends BeforeAndAfterTest implements StatusModelCrud {
 
     private final String newStatus = "newStatus";
     private final String updatedStatus = "updateStatus";
@@ -40,32 +25,6 @@ public class StatusRepositoryTest extends WithApplication implements StatusModel
     @Override
     protected Application provideApplication() {
         return new GuiceApplicationBuilder().build();
-    }
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        running(fakeApplication(inMemoryDatabase("test")), () -> {
-            database = Databases.inMemory(
-                    "mydatabase",
-                    ImmutableMap.of(
-                            "MODE", "MYSQL"
-                    ),
-                    ImmutableMap.of(
-                            "logStatements", true
-                    )
-            );
-            Evolutions.applyEvolutions(database);
-            defaultStatuses.createDefaultStatuses();
-        });
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        running(fakeApplication(inMemoryDatabase("test")), () -> {
-            defaultStatuses.deleteDefaultStatuses();
-            Evolutions.cleanupEvolutions(database);
-            database.shutdown();
-        });
     }
 
     @Test

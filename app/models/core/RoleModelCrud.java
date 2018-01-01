@@ -1,57 +1,199 @@
 package models.core;
 
+import io.ebean.Ebean;
+
 import java.util.Date;
 import java.util.List;
 
+/**
+ * models.core.RoleModelCrud.java
+ * <p>
+ * Crud operations of RoleModel.
+ */
 public interface RoleModelCrud {
 
-    default void createRole(String name, Long statusId){
-        RoleModel roleModel = new RoleModel();
-        roleModel.name = name;
-        roleModel.status = StatusModel.FINDER.ref(statusId);
-        roleModel.createdAt = new Date();
-        roleModel.updateAt = new Date();
-        roleModel.save();
+    /**
+     * Create new role.
+     *
+     * @param name
+     * @param statusId
+     * @return new role model when success and null when failed
+     */
+    default RoleModel createRole(String name, Long statusId) {
+
+        RoleModel existsRoleModel = RoleModel.FINDER.query().where().eq("name", name).findOne();
+        StatusModel statusModel = StatusModel.FINDER.ref(statusId);
+
+        if ((statusModel != null) && (existsRoleModel == null)) {
+
+            RoleModel roleModel = new RoleModel();
+            roleModel.name = name;
+            roleModel.status = statusModel;
+            roleModel.createdAt = new Date();
+            roleModel.updateAt = new Date();
+            roleModel.save();
+
+            return RoleModel.FINDER.query().where().eq("name", name)
+                    .eq("status", statusModel).findOne();
+        }
+
+        return null;
     }
 
-    default void updateRoleName(Long roleId, String name){
+    /**
+     * Update role name.
+     *
+     * @param roleId
+     * @param name
+     * @return role when success or null when failed
+     */
+    default RoleModel updateRoleName(Long roleId, String name) {
+
         RoleModel roleModel = RoleModel.FINDER.ref(roleId);
-        roleModel.name = name;
-        roleModel.updateAt = new Date();
-        roleModel.update();
+        RoleModel existsRoleModel = RoleModel.FINDER.query().where().eq("name", name).findOne();
+
+        if ((roleModel != null) && (existsRoleModel == null)) {
+
+            Ebean.beginTransaction();
+
+            try {
+
+                roleModel.name = name;
+                roleModel.updateAt = new Date();
+                roleModel.update();
+
+                Ebean.commitTransaction();
+            } finally {
+
+                Ebean.endTransaction();
+            }
+
+            return RoleModel.FINDER.query().where().eq("id", roleId).eq("name", name)
+                    .findOne();
+        }
+
+        return null;
     }
 
-    default void updateRoleStatus(Long roleId, Long statusId){
+    /**
+     * Update role status.
+     *
+     * @param roleId
+     * @param statusId
+     * @return role when success or null when failed
+     */
+    default RoleModel updateRoleStatus(Long roleId, Long statusId) {
+
         RoleModel roleModel = RoleModel.FINDER.ref(roleId);
-        roleModel.status = StatusModel.FINDER.ref(statusId);
-        roleModel.updateAt = new Date();
-        roleModel.save();
+        StatusModel statusModel = StatusModel.FINDER.ref(statusId);
+
+        if ((roleModel != null) && (statusModel != null)) {
+
+            Ebean.beginTransaction();
+            try {
+
+                roleModel.status = statusModel;
+                roleModel.updateAt = new Date();
+                roleModel.update();
+
+                Ebean.commitTransaction();
+            } finally {
+
+                Ebean.endTransaction();
+            }
+
+            return RoleModel.FINDER.query().where().eq("id", roleId).eq("status", statusModel)
+                    .findOne();
+        }
+
+        return null;
     }
 
-    default void deleteRole(Long roleId){
+    /**
+     * Delete role.
+     *
+     * @param roleId
+     * @return role when success or null when failed
+     */
+    default RoleModel deleteRole(Long roleId) {
+
         RoleModel roleModel = RoleModel.FINDER.ref(roleId);
-        roleModel.delete();
+
+        if (roleModel != null) {
+
+            roleModel.delete();
+
+            return roleModel;
+        }
+
+        return null;
     }
 
+    /**
+     * Find all roles.
+     *
+     * @return list of all roles
+     */
     default List<RoleModel> findAllRoles(){
+
         List<RoleModel> roles = RoleModel.FINDER.all();
         return roles;
     }
 
+    /**
+     * Find all roles by status.
+     *
+     * @param statusId
+     * @return list of all roles find by status
+     */
     default List<RoleModel> findAllRolesByStatus(Long statusId){
+
         StatusModel status = StatusModel.FINDER.ref(statusId);
+
         List<RoleModel> roles = RoleModel.FINDER.query().where().eq("status", status).findList();
         return roles;
     }
 
-    default RoleModel findRoleById(Long roleId){
-        RoleModel roleModel = RoleModel.FINDER.ref(roleId);
-        return roleModel;
+    /**
+     * Find role by id.
+     *
+     * @param roleId
+     * @return role when success or null when failed
+     */
+    default RoleModel findRoleById(Long roleId) {
+
+        try {
+
+            return RoleModel.FINDER.ref(roleId);
+        } catch (NullPointerException e) {
+
+            return null;
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    default RoleModel findRoleByName(String name){
-        RoleModel roleModel = RoleModel.FINDER.query().where().eq("name", name).findOne();
-        return roleModel;
+    /**
+     * Find role by name.
+     *
+     * @param name
+     * @return role when success or null when failed
+     */
+    default RoleModel findRoleByName(String name) {
+
+        try {
+
+            return RoleModel.FINDER.query().where().eq("name", name).findOne();
+        } catch (NullPointerException e) {
+
+            return null;
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

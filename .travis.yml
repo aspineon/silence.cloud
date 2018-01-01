@@ -16,7 +16,8 @@ before_cache:
 - rm -rf $HOME/.ivy2/cache/scala_*/sbt_*/com.typesafe.play/*
 - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print0 | xargs -n10 -0 rm
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION test:compile:dist
+  - sbt ++$TRAVIS_SCALA_VERSION test
+  - sbt ++$TRAVIS_SCALA_VERSION dist
 notifications:
   slack:
 secure: NecHMBqvfS4IXAnU23lz/kLqCqMVPIFaRx1g6UwgJgMvR4XWeIhpzLOzAnOOcmv+kQzv7A8vEJBM20z1HNzDcxzvuNNO2BHn8EjXh5VD65vXMcA+lKzUxASey/Rs+CBReQWE7M=

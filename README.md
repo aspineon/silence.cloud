@@ -72,7 +72,15 @@ There are several demonstration files available in this template.
  - **models.core.RoleModelCrud.java**
   
    RoleModelCrud interface implements sample crud operatios of RoleModel.
+ 
+ - **models.core.ModuleModel.java**
    
+   ModuleModel implements application modules.
+ 
+ - **models.core.ModuleModelCrud.java**
+ 
+   ModuleModelCrudInterface implements crud operations of ModuleModel.
+     
 ## Repositories
 
   - **repositories.core.StatusRepository.java**
@@ -82,7 +90,7 @@ There are several demonstration files available in this template.
     
   - **repositories.core.StatusRepositoryInterface.java**
       
-    StatusRepositoryInterface implements abstract method of 
+    StatusRepositoryInterface implements abstract methods of 
     StatusRepository.
    
   - **repositories.core.RoleRepository.java**
@@ -90,6 +98,15 @@ There are several demonstration files available in this template.
     RoleRepository implements non-blocking database crud operations 
     of RoleModel.
     
-   - **repositories.core.RoleRepositoryInterface.java**
+  - **repositories.core.RoleRepositoryInterface.java**
     
-     RoleRepositoryInterface implements abstract method of RoleRepository.
+    RoleRepositoryInterface implements abstract methods of RoleRepository.
+    
+  - **repositories.core.ModuleRepository.java**
+  
+    ModuleRepository implements non-blocking database crud operations 
+    of ModuleModel.
+    
+  - **repositories.core.ModuleRepositoryInterface.java**
+  
+    ModuleRepositoryInterface implements abstract methods of ModuleRepository.

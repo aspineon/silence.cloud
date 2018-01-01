@@ -7,6 +7,11 @@ import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * models.core.StatusModel.java
+ * <p>
+ * Model of application statuses.
+ */
 @Entity
 @Table(name = "status")
 public class StatusModel extends BaseModel {
@@ -18,6 +23,9 @@ public class StatusModel extends BaseModel {
 
     @OneToMany(mappedBy = "status", cascade = CascadeType.ALL)
     public List<RoleModel> roles = new LinkedList<>();
+
+    @OneToMany(mappedBy = "status", cascade = CascadeType.ALL)
+    public List<ModuleModel> modules;
 
     public static Finder<Long, StatusModel> FINDER = new Finder<Long, StatusModel>(StatusModel.class);
 }

@@ -10,6 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
+/**
+ * models.core.BaseModel.java
+ * <p>
+ * Super class of others models.
+ */
 @MappedSuperclass
 public class BaseModel extends Model {
 
