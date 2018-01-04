@@ -13,6 +13,62 @@ import java.util.List;
 public interface ModuleModelCrud {
 
     /**
+     * Find all modules.
+     *
+     * @return List of modules
+     */
+    default List<ModuleModel> findAllModules() {
+
+        return ModuleModel.FINDER.all();
+
+    }
+
+    /**
+     * Find all modules by status.
+     *
+     * @param statusId
+     * @return list of modules
+     */
+    default List<ModuleModel> findAllModulesByStatus(Long statusId) {
+
+        StatusModel status = StatusModel.FINDER.ref(statusId);
+        return ModuleModel.FINDER.query().where().eq("status", status).findList();
+
+    }
+
+    /**
+     * Find module by id.
+     *
+     * @param id
+     * @return module when success or null when failed
+     */
+    default ModuleModel findModuleById(Long id) {
+
+        return ModuleModel.FINDER.byId(id);
+    }
+
+    /**
+     * Find module by name.
+     *
+     * @param name
+     * @return module when succes or null when failed
+     */
+    default ModuleModel findModuleByName(String name) {
+
+        try {
+
+            return ModuleModel.FINDER.query().where().eq("name", name).findOne();
+        } catch (NullPointerException e) {
+
+            return null;
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Create new module.
      *
      * @param name
@@ -21,7 +77,7 @@ public interface ModuleModelCrud {
      */
     default ModuleModel createModule(String name, Long statusId) {
 
-        StatusModel statusModel = StatusModel.FINDER.ref(statusId);
+        StatusModel statusModel = StatusModel.FINDER.byId(statusId);
         ModuleModel existsModuleModel = ModuleModel.FINDER.query().where().eq("name", name).findOne();
 
         if ((statusModel != null) && (existsModuleModel == null)) {
@@ -50,7 +106,7 @@ public interface ModuleModelCrud {
      */
     default ModuleModel updateModuleName(Long moduleId, String name) {
 
-        ModuleModel moduleModel = ModuleModel.FINDER.ref(moduleId);
+        ModuleModel moduleModel = ModuleModel.FINDER.byId(moduleId);
         ModuleModel existsModuleModel = ModuleModel.FINDER.query().where().eq("name", name).findOne();
 
         if ((moduleModel != null) && (existsModuleModel == null)) {
@@ -84,8 +140,8 @@ public interface ModuleModelCrud {
      */
     default ModuleModel updateModuleStatus(Long moduleId, Long statusId) {
 
-        ModuleModel moduleModel = ModuleModel.FINDER.ref(moduleId);
-        StatusModel statusModel = StatusModel.FINDER.ref(statusId);
+        ModuleModel moduleModel = ModuleModel.FINDER.byId(moduleId);
+        StatusModel statusModel = StatusModel.FINDER.byId(statusId);
 
         if ((moduleModel != null) && (statusModel != null)) {
 
@@ -117,10 +173,13 @@ public interface ModuleModelCrud {
      */
     default ModuleModel deleteModule(Long moduleId) {
 
-        ModuleModel moduleModel = ModuleModel.FINDER.ref(moduleId);
+        ModuleModel moduleModel = ModuleModel.FINDER.byId(moduleId);
         if (moduleModel != null) {
 
             moduleModel.delete();
+        } else {
+
+            return new ModuleModel();
         }
 
         ModuleModel deleteModuleModel = ModuleModel.FINDER.query().where().eq("id", moduleId).findOne();
@@ -133,72 +192,4 @@ public interface ModuleModelCrud {
 
         return moduleModel;
     }
-
-    /**
-     * Find all modules.
-     *
-     * @return List of modules
-     */
-    default List<ModuleModel> findAllModules() {
-
-        return ModuleModel.FINDER.all();
-
-    }
-
-    /**
-     * Find all modules by status.
-     *
-     * @param statusId
-     * @return list of modules
-     */
-    default List<ModuleModel> findAllModulesByStatus(Long statusId) {
-
-        StatusModel status = StatusModel.FINDER.ref(statusId);
-        return ModuleModel.FINDER.query().where().eq("status", status).findList();
-
-    }
-
-    /**
-     * Find module by id.
-     *
-     * @param id
-     * @return module when success or null when failed
-     */
-    default ModuleModel findModuleById(Long id) {
-
-        try {
-
-            return ModuleModel.FINDER.ref(id);
-        } catch (NullPointerException e) {
-
-            return null;
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return null;
-        }
-
-    }
-
-    /**
-     * Find module by name.
-     *
-     * @param name
-     * @return module when succes or null when failed
-     */
-    default ModuleModel findModuleByName(String name) {
-
-        try {
-
-            return ModuleModel.FINDER.query().where().eq("name", name).findOne();
-        } catch (NullPointerException e) {
-
-            return null;
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 }

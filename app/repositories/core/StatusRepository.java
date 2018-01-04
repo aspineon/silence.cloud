@@ -45,6 +45,52 @@ public class StatusRepository implements StatusRepositoryInterface {
     }
 
     /**
+     * Find all statuses.
+     *
+     * @return list of statuses
+     */
+    @Override
+    public CompletionStage<List<StatusModel>> findAllStatuses() {
+
+        return supplyAsync(() -> {
+
+            return ebeanServer.find(StatusModel.class).findList();
+        }, executionContext);
+    }
+
+    /**
+     * Find status by id.
+     *
+     * @param id
+     * @return status when success or null when failed
+     */
+    @Override
+    public CompletionStage<Optional<StatusModel>> findStatusById(Long id) {
+
+        return supplyAsync(() -> {
+
+            return Optional.ofNullable(ebeanServer.find(StatusModel.class).setId(id).findOne());
+        }, executionContext);
+    }
+
+    /**
+     * Find status by name.
+     *
+     * @param name
+     * @return status when success or null when failed
+     */
+    @Override
+    public CompletionStage<Optional<StatusModel>> findStatusByName(String name) {
+
+        return supplyAsync(() -> {
+
+            return Optional.ofNullable(
+                    ebeanServer.find(StatusModel.class).where().eq("name", name).findOne()
+            );
+        }, executionContext);
+    }
+
+    /**
      * Create status.
      *
      * @param name
@@ -130,55 +176,12 @@ public class StatusRepository implements StatusRepositoryInterface {
             if(savedStatus != null) {
 
                 ebeanServer.delete(savedStatus);
+            } else {
+
+                return Optional.ofNullable(new StatusModel());
             }
 
             return Optional.ofNullable(ebeanServer.find(StatusModel.class).setId(id).findOne());
-        }, executionContext);
-    }
-
-    /**
-     * Find all statuses.
-     *
-     * @return list of statuses
-     */
-    @Override
-    public CompletionStage<List<StatusModel>> findAllStatuses() {
-
-        return supplyAsync(() -> {
-
-            return ebeanServer.find(StatusModel.class).findList();
-        }, executionContext);
-    }
-
-    /**
-     * Find status by id.
-     *
-     * @param id
-     * @return status when success or null when failed
-     */
-    @Override
-    public CompletionStage<Optional<StatusModel>> findStatusById(Long id) {
-
-        return supplyAsync(() -> {
-
-            return Optional.ofNullable(ebeanServer.find(StatusModel.class).setId(id).findOne());
-        }, executionContext);
-    }
-
-    /**
-     * Find status by name.
-     *
-     * @param name
-     * @return status when success or null when failed
-     */
-    @Override
-    public CompletionStage<Optional<StatusModel>> findStatusByName(String name) {
-
-        return supplyAsync(() -> {
-
-            return Optional.ofNullable(
-                    ebeanServer.find(StatusModel.class).where().eq("name", name).findOne()
-            );
         }, executionContext);
     }
 }

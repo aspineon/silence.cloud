@@ -21,20 +21,32 @@ public interface StatusModelCrud {
     default StatusModel createStatus(String name) {
 
         StatusModel existsStatusModel = StatusModel.FINDER.query().where().eq("name", name).findOne();
+        StatusModel currentStatus = null;
 
-        if (existsStatusModel == null) {
+        try {
+            if (existsStatusModel == null) {
 
-            StatusModel statusModel = new StatusModel();
-            statusModel.id = System.currentTimeMillis();
-            statusModel.name = name;
-            statusModel.createdAt = new Date();
-            statusModel.updateAt = new Date();
-            statusModel.save();
+                StatusModel statusModel = new StatusModel();
+                statusModel.id = System.currentTimeMillis();
+                statusModel.name = name;
+                statusModel.createdAt = new Date();
+                statusModel.updateAt = new Date();
+                statusModel.save();
 
-            return StatusModel.FINDER.query().where().eq("name", name).findOne();
+
+            } else {
+
+                throw new NullPointerException();
+            }
+
+            currentStatus = findStatusByName(name);
+        } catch (Exception e){
+
+            e.printStackTrace();
+        } finally {
+
+            return currentStatus;
         }
-
-        return null;
     }
 
     /**
@@ -46,44 +58,53 @@ public interface StatusModelCrud {
      */
     default StatusModel updateStatus(Long id, String name) {
 
-        StatusModel statusModel = StatusModel.FINDER.ref(id);
+        StatusModel statusModel = StatusModel.FINDER.byId(id);
         StatusModel existsStatusModel = StatusModel.FINDER.query().where().eq("name", name).findOne();
+        StatusModel updatedStatus = null;
 
-        if ((statusModel != null) && (existsStatusModel == null)) {
-            Ebean.beginTransaction();
-            try {
+        try {
+            if ((statusModel != null) && (existsStatusModel == null)) {
+                Ebean.beginTransaction();
                 statusModel.name = name;
                 statusModel.updateAt = new Date();
                 statusModel.update();
 
                 Ebean.commitTransaction();
-            } finally {
+
                 Ebean.endTransaction();
+
+                updatedStatus = findStatusByName(name);
+            } else {
+
+                throw new NullPointerException();
             }
 
-            return StatusModel.FINDER.query().where().eq("id", id).eq("name", name).findOne();
-        }
+        }  catch ( Exception e){
 
-        return statusModel;
+            e.printStackTrace();
+        } finally {
+
+            return updatedStatus;
+        }
     }
 
     /**
      * Delete status.
      *
      * @param id
-     * @return deleted status when success or null when failed
+     * @return deleted status when success or null empty status model when failed
      */
     default StatusModel deleteStatus(Long id) {
 
-        StatusModel statusModel = StatusModel.FINDER.ref(id);
+        StatusModel statusModel = StatusModel.FINDER.byId(id);
 
         if (statusModel != null) {
 
             statusModel.delete();
-            return statusModel;
+            return StatusModel.FINDER.query().where().eq("id", id).findOne();
         }
 
-        return null;
+        return new StatusModel();
     }
 
     /**
@@ -102,18 +123,22 @@ public interface StatusModelCrud {
      * @param id
      * @return status when success or null when failed
      */
-    default StatusModel findStatusById(Long id){
+    default StatusModel findStatusById(Long id) {
 
         try {
 
-            return StatusModel.FINDER.ref(id);
-        } catch (NullPointerException e) {
+            StatusModel statusModel = StatusModel.FINDER.byId(id);
 
-            return null;
+            if(statusModel == null){
+
+                throw new NullPointerException();
+            }
+
+            return statusModel;
         } catch (Exception e) {
 
             e.printStackTrace();
-            return null;
+            throw new NullPointerException();
         }
     }
 
@@ -123,18 +148,22 @@ public interface StatusModelCrud {
      * @param name
      * @return status when success or null when failed
      */
-    default StatusModel findStatusByName(String name){
+    default StatusModel findStatusByName(String name) {
 
         try {
 
-            return StatusModel.FINDER.query().where().eq("name", name).findOne();
-        } catch (NullPointerException e) {
+            StatusModel statusModel = StatusModel.FINDER.query().where().eq("name", name).findOne();
 
-            return null;
+            if(statusModel == null){
+
+                throw new NullPointerException();
+            }
+
+            return statusModel;
         } catch (Exception e) {
 
             e.printStackTrace();
-            return null;
+            throw new NullPointerException();
         }
     }
 

@@ -1,8 +1,8 @@
 package helpers;
 
 import com.google.common.collect.ImmutableMap;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import play.db.Database;
 import play.db.Databases;
 import play.db.evolutions.Evolutions;
@@ -14,14 +14,14 @@ import static play.test.Helpers.running;
 
 public class BeforeAndAfterTest extends WithApplication {
 
-    private final static DefaultStatuses defaultStatuses = new DefaultStatuses();
-    private final static DefaultRoles defaultRoles = new DefaultRoles();
-    private final static DefaultModules defaultModules = new DefaultModules();
+    private final DefaultStatuses defaultStatuses = new DefaultStatuses();
+    private final DefaultRoles defaultRoles = new DefaultRoles();
+    private final DefaultModules defaultModules = new DefaultModules();
 
-    static Database database;
+    Database database;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
             database = Databases.inMemory(
                     "mydatabase",
@@ -41,8 +41,8 @@ public class BeforeAndAfterTest extends WithApplication {
         });
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
             running(fakeApplication(inMemoryDatabase("test")), () -> {
                 defaultModules.deleteModules();

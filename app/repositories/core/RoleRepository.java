@@ -179,6 +179,9 @@ public class RoleRepository implements RoleRepositoryInterface {
                     currentRole.updateAt = new Date();
                     ebeanServer.update(currentRole);
                     txn.commit();
+                } else {
+
+                    return updatedRole;
                 }
 
                 updatedRole = Optional.ofNullable(
@@ -250,6 +253,9 @@ public class RoleRepository implements RoleRepositoryInterface {
             if(role != null) {
 
                 ebeanServer.delete(role);
+            } else {
+
+                return Optional.of(new RoleModel());
             }
 
             if (ebeanServer.find(RoleModel.class).setId(role.id).findOne() != null) {

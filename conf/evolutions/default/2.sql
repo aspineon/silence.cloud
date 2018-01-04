@@ -10,9 +10,9 @@ INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (1, "offic
 INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (2, "partners", 1, NOW(), NOW());
 INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (3, "counsel", 1, NOW(), NOW());
 INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (4, "practise", 1, NOW(), NOW());
-INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (5, "junior_associate", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (5, "juniorAssociate", 1, NOW(), NOW());
 INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (6, "associate", 1, NOW(), NOW());
-INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (7, "senior_associate", 1, NOW(), NOW());
+INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (7, "seniorAssociate", 1, NOW(), NOW());
 INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (8, "auditors", 1, NOW(), NOW());
 INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (9, "marketing", 1, NOW(), NOW());
 INSERT INTO role (id, name, status_id, created_at, updated_at) VALUES (10, "sales", 1, NOW(), NOW());

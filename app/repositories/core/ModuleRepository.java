@@ -203,7 +203,7 @@ public class ModuleRepository implements ModuleRepositoryInterface {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<ModuleModel> updatedModule = Optional.empty();
 
-            ModuleModel moduleModel = ebeanServer.find(ModuleModel.class).setId(statusId).findOne();
+            ModuleModel moduleModel = ebeanServer.find(ModuleModel.class).setId(moduleId).findOne();
             StatusModel statusModel = ebeanServer.find(StatusModel.class).setId(statusId).findOne();
 
             try {
@@ -234,7 +234,7 @@ public class ModuleRepository implements ModuleRepositoryInterface {
      * Delete module.
      *
      * @param moduleId
-     * @return delete module when success or null when failed
+     * @return nuu when success or module when failed
      */
     @Override
     public CompletionStage<Optional<ModuleModel>> deleteModule(Long moduleId) {
@@ -243,8 +243,10 @@ public class ModuleRepository implements ModuleRepositoryInterface {
             ModuleModel moduleModel = ebeanServer.find(ModuleModel.class).setId(moduleId).findOne();
             if (moduleModel != null) {
                 ebeanServer.delete(moduleModel);
+            }else {
+                return Optional.of(new ModuleModel());
             }
-            if (ebeanServer.find(ModuleModel.class).setId(moduleId).findOne() == null) {
+            if (ebeanServer.find(ModuleModel.class).setId(moduleId).findOne() != null) {
                 deletedModel = Optional.of(moduleModel);
             }
             return deletedModel;

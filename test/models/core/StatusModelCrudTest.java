@@ -15,47 +15,135 @@ public class StatusModelCrudTest extends BeforeAndAfterTest implements StatusMod
     private final Long statusId = 1L;
     private final String statusName = "active";
 
+    private final Long notExistsStatusId = 99L;
+
     private final String newStatus = "newStatus";
     private final String updatedStatus = "updatedStatus";
 
+    private String notExistsStatusName = "notExists";
+
     private int firstExceptedSize = 7;
-    private int secondExceptedSize = 8;
 
     @Test
     public void findAllStatusesTest() throws Exception {
+
         running(fakeApplication(inMemoryDatabase("test")), () ->{
+
             assertEquals(firstExceptedSize, StatusModelCrud.super.findAllStatuses().size());
         });
     }
 
-    @Test
-    public void findStatusByIdTest() throws Exception {
+    @Test(expected=NullPointerException.class)
+    public void findStatusByNotExistsIdTest(){
+
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            assertNotNull(StatusModelCrud.super.findStatusById(statusId));
+
+            assertNull(StatusModelCrud.super.findStatusById(notExistsStatusId));
         });
     }
 
     @Test
-    public void findStatusByNameTest() throws Exception {
+    public void findStatusByExistsIdTest() throws Exception {
+
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            assertNotNull(StatusModelCrud.super.findStatusByName(statusName));
+
+            try {
+                assertNotNull(StatusModelCrud.super.findStatusById(statusId));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void findStatusByNotExistsNameTest() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            assertNull(StatusModelCrud.super.findStatusByName(notExistsStatusName));
         });
     }
 
     @Test
-    public void statusModelTest() throws Exception {
+    public void findStatusByExistsNameTest() throws Exception {
+
         running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            try {
+
+                assertNotNull(StatusModelCrud.super.findStatusByName(statusName));
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                assertNotNull(null);
+            }
+        });
+    }
+
+    @Test
+    public void deleteStatusByNotExistsIdTest() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            assertNotNull(StatusModelCrud.super.deleteStatus(notExistsStatusId));
+        });
+    }
+
+    @Test
+    public void deleteStatusByExistsIdTest() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            assertNull(StatusModelCrud.super.deleteStatus(statusId));
+        });
+    }
+
+    @Test
+    public void createStatusByExistsNameTest() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            assertNull(StatusModelCrud.super.createStatus(statusName));
+        });
+    }
+
+    @Test
+    public void createStatusByNotExistsNameTest() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
             assertNotNull(StatusModelCrud.super.createStatus(newStatus));
-            assertNotNull(StatusModelCrud.super.findStatusByName(newStatus));
-            assertEquals(secondExceptedSize, StatusModelCrud.super.findAllStatuses().size());
-            assertNotNull(
-                    StatusModelCrud.super.updateStatus(StatusModelCrud.super
-                            .findStatusByName(newStatus).id, updatedStatus)
-            );
-            assertNotNull(StatusModelCrud.super.findStatusByName(updatedStatus));
-            assertNotNull(StatusModelCrud.super.deleteStatus(StatusModelCrud.super.findStatusByName(updatedStatus).id));
-            assertNull(StatusModelCrud.super.findStatusByName(updatedStatus));
-            assertEquals(firstExceptedSize, StatusModelCrud.super.findAllStatuses().size());
+        });
+    }
+
+    @Test
+    public void updateStatusWithNotExistsIdTest() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            StatusModelCrud.super.createStatus(newStatus);
+            assertNull(StatusModelCrud.super.updateStatus(notExistsStatusId, updatedStatus));
+        });
+    }
+
+    @Test
+    public void updateStatusWithExistsNameTest() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            StatusModelCrud.super.createStatus(newStatus);
+            assertNull(StatusModelCrud.super.updateStatus(statusId, newStatus));
+        });
+    }
+
+    @Test
+    public void updateStatusTest() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            StatusModelCrud.super.createStatus(newStatus);
+            assertNotNull(StatusModelCrud.super.updateStatus(statusId, updatedStatus));
         });
     }
 }

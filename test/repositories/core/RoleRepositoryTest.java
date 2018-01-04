@@ -2,7 +2,6 @@ package repositories.core;
 
 import helpers.BeforeAndAfterTest;
 import models.core.RoleModel;
-import models.core.RoleModelCrud;
 import org.junit.*;
 import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
@@ -14,85 +13,357 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.inMemoryDatabase;
+import static play.test.Helpers.running;
 
-public class RoleRepositoryTest extends BeforeAndAfterTest implements RoleModelCrud {
+public class RoleRepositoryTest extends BeforeAndAfterTest {
 
-    private static final Long firstStatusId = 1L;
-    private static final Long secondStatusId = 2L;
+    private Long activeStatusId = 1L;
+    private Long inactiveStatusId = 2L;
 
-    private final String newRoleName = "newRole";
-    private final String updatedRoleName = "updatedRole";
+    private Long officeRoleId = 1L;
 
-    private int expectedSize = 14;
+    private Long notExistsRoleId = 100L;
+
+    private Long notExistsStatusId = 100L;
+
+    private String newRoleName = "newRole";
+    private String updatedRole = "updatedRole";
+    private String officeRoleName = "office";
+
+    private String notExistsRoleName = "notExists";
+
+    private int expectedSize = 13;
+    private int emptyListSize = 0;
 
     @Override
     protected Application provideApplication() {
         return new GuiceApplicationBuilder().build();
     }
 
+
     @Test
-    public void roleRepositoryTest() throws Exception {
-        final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+    public void findAllRoles() throws Exception {
 
-        final CompletionStage<Optional<RoleModel>> createStage = roleRepository.createRole(newRoleName, firstStatusId);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(createStage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
-                return role.isPresent() && role.get() != null;
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            CompletionStage<List<RoleModel>> stage = roleRepository.findAllRoles();
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
+
+                    return list.size() == expectedSize;
+                });
             });
         });
+    }
 
-        final CompletionStage<List<RoleModel>> findAllRolesStage = roleRepository.findAllRoles();
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(findAllRolesStage.toCompletableFuture()).isCompletedWithValueMatching(roles -> {
-                return roles.size() == expectedSize;
+    @Test
+    public void findAllRolesByNotExistsStatus() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            CompletionStage<List<RoleModel>> stage = roleRepository.findAllRolesByStatus(notExistsStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
+                    return list.size() == emptyListSize;
+                });
             });
         });
+    }
 
-        final CompletionStage<List<RoleModel>> findAllRolesByStatus = roleRepository.findAllRolesByStatus(firstStatusId);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(findAllRolesByStatus.toCompletableFuture()).isCompletedWithValueMatching(roles -> {
-                return roles.size() == expectedSize;
+    @Test
+    public void findAllRolesByExistsStatus() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            CompletionStage<List<RoleModel>> stage = roleRepository.findAllRolesByStatus(activeStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
+                    return list.size() == expectedSize;
+                });
             });
         });
+    }
 
-        final CompletionStage<Optional<RoleModel>> roleByNameStage = roleRepository.findRoleByName(newRoleName);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(roleByNameStage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
-                return role.isPresent() && role.get() != null;
+    @Test
+    public void findRoleByNotExistsId() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.findRoleById(notExistsRoleId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return !role.isPresent();
+                });
             });
         });
+    }
 
-        final RoleModel existsRole = RoleModelCrud.super.findRoleByName(newRoleName);
+    @Test
+    public void findRoleByExistsId() throws Exception {
 
-        final CompletionStage<Optional<RoleModel>> roleByIdStage = roleRepository.findRoleById(existsRole.id);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(roleByIdStage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
-                return role.isPresent() && role.get() != null;
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.findRoleById(officeRoleId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return role.isPresent() && role.get() != null;
+                });
             });
         });
+    }
 
-        final CompletionStage<Optional<RoleModel>> updateRoleNameStage = roleRepository.updateRoleName(
-                existsRole.id, updatedRoleName
-        );
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(updateRoleNameStage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
-                return role.isPresent() && role.get() != null;
+    @Test
+    public void findRoleByNotExistsName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.findRoleByName(notExistsRoleName);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return !role.isPresent();
+                });
             });
         });
+    }
 
-        final CompletionStage<Optional<RoleModel>> updateRoleStatusStage = roleRepository.updateRoleStatus(
-                existsRole.id, secondStatusId
-        );
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(updateRoleStatusStage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
-                return role.isPresent() && role.get() != null;
+    @Test
+    public void findRoleByExistsName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.findRoleByName(officeRoleName);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return role.isPresent() && role.get() != null;
+                });
             });
         });
+    }
 
-        final CompletionStage<Optional<RoleModel>> deleteRoleStage = roleRepository.deleteRole(existsRole.id);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(deleteRoleStage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
-                return !role.isPresent();
+    @Test
+    public void createRoleWithExistsName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            CompletionStage<Optional<RoleModel>> stage = roleRepository.createRole(officeRoleName, activeStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+                    return !role.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void createRoleWithNotExistsStatus() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.createRole(newRoleName, notExistsStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return !role.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void createNewRole() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.createRole(newRoleName, activeStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return role.isPresent() && role.get() != null;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateNotExistsRoleName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.updateRoleName(notExistsRoleId, officeRoleName);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return !role.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateRoleWithExistsName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.updateRoleName(officeRoleId, officeRoleName);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return !role.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateRoleName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.updateRoleName(officeRoleId, updatedRole);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+                    return role.isPresent() && role.get() != null;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateNotExistsRoleStatus() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.updateRoleStatus(
+                    notExistsRoleId, inactiveStatusId
+            );
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return !role.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateRoleWithNotExistsStatus(){
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.updateRoleStatus(
+                    officeRoleId, notExistsStatusId
+            );
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return !role.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateRoleStatus() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.updateRoleStatus(
+                    officeRoleId, inactiveStatusId
+            );
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return role.isPresent() && role.get() != null;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void deleteRoleWithNotExistsId() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.deleteRole(notExistsRoleId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return role.isPresent() && role.get() != null;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void deleteRole() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final RoleRepository roleRepository = app.injector().instanceOf(RoleRepository.class);
+            final CompletionStage<Optional<RoleModel>> stage = roleRepository.deleteRole(officeRoleId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(role -> {
+
+                    return !role.isPresent();
+                });
             });
         });
     }
