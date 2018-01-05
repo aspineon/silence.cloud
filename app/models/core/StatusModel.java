@@ -22,6 +22,9 @@ public class StatusModel extends BaseModel {
     public String name;
 
     @OneToMany(mappedBy = "status", cascade = CascadeType.ALL)
+    public List<PageModel> pages = new LinkedList<>();
+
+    @OneToMany(mappedBy = "status", cascade = CascadeType.ALL)
     public List<RoleModel> roles = new LinkedList<>();
 
     @OneToMany(mappedBy = "status", cascade = CascadeType.ALL)
