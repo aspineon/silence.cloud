@@ -104,7 +104,7 @@ public interface PageRepositoryInterface {
      * @return list of all pages find by twitter Image
      */
     CompletionStage<Optional<PageModel>> findPageByTwitterImage(String twitterImage);
-
+ 
     /**
      * Update page name.
      *
