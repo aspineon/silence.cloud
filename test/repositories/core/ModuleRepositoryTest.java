@@ -13,20 +13,28 @@ import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 import static org.assertj.core.api.Assertions.assertThat;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.inMemoryDatabase;
+import static play.test.Helpers.running;
 
 public class ModuleRepositoryTest extends BeforeAndAfterTest {
 
-    private int firstExpectedSize = 1;
-    private int secondExpectedSize = 2;
+    private int expectedSize = 1;
+    private int emptyListSize = 0;
 
     private String existsModuleName = "sampleModule";
     private String newModuleName = "newModule";
     private String updatedModuleName = "updatedModule";
+    private String notExistsModuleName = "notExistsModule";
 
-    private Long existsStatusId = 1L;
-    private Long newStatusId = 2L;
+    private Long activeStatusId = 1L;
+    private Long inactiveStatusId = 2L;
+
+
+    private Long notExistsStatusId = 100L;
 
     private Long existsModuleId = 1L;
+    private Long notExistsModuleId = 100L;
 
     @Override
     protected Application provideApplication() {
@@ -34,125 +42,337 @@ public class ModuleRepositoryTest extends BeforeAndAfterTest {
     }
 
     @Test
-    public void moduleRepository() throws Exception {
-        final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+    public void findAllModules() throws Exception {
 
-        final CompletionStage<List<ModuleModel>> findFirstAllModulesStage = moduleRepository.findAllModules();
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(findFirstAllModulesStage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
-                return list.size() == firstExpectedSize;
-            });
-        });
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
 
-        final CompletionStage<List<ModuleModel>> findFirstAllModulesByStatusStage = moduleRepository
-                .findAllModulesByStatus(existsStatusId);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(findFirstAllModulesByStatusStage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
-                return list.size() == firstExpectedSize;
-            });
-        });
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<List<ModuleModel>> stage = moduleRepository.findAllModules();
 
-        final CompletionStage<Optional<ModuleModel>> firstFindModuleByIdStage = moduleRepository
-                .findModuleById(existsModuleId);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(firstFindModuleByIdStage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
-                return module.isPresent() && module.get() != null;
-            });
-        });
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
 
-        final CompletionStage<Optional<ModuleModel>> firstFindModuleByNameStage = moduleRepository
-                .findModuleByName(existsModuleName);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(firstFindModuleByNameStage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
-                return module.isPresent() && module.get() != null;
-            });
-        });
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
 
-        final CompletionStage<Optional<ModuleModel>> createModuleStage = moduleRepository
-                .createModule(newModuleName, existsStatusId);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(createModuleStage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
-                return module.isPresent() && module.get() != null;
-            });
-        });
-
-        final CompletionStage<List<ModuleModel>> secondFindAllModulesStage = moduleRepository.findAllModules();
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(secondFindAllModulesStage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
-                return list.size() == secondExpectedSize;
-            });
-        });
-
-        final CompletionStage<List<ModuleModel>> secondFindAllModulesByStatus = moduleRepository
-                .findAllModulesByStatus(existsStatusId);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(secondFindAllModulesByStatus.toCompletableFuture()).isCompletedWithValueMatching(list -> {
-                return list.size() == 2;
-            });
-        });
-
-        final CompletionStage<Optional<ModuleModel>> secondFindModuleByNameStage = moduleRepository
-                .findModuleByName(newModuleName);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(secondFindModuleByNameStage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
-                return module.isPresent() && module.get() != null;
-            });
-        });
-
-        final CompletionStage<Optional<ModuleModel>> updateModuleNameStage = moduleRepository.updateModuleName(
-                existsModuleId, updatedModuleName
-        );
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(updateModuleNameStage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
-                return module.isPresent() && module.get() != null;
-            });
-        });
-
-        final CompletionStage<Optional<ModuleModel>> thirdFindModuleByNameStage = moduleRepository
-                .findModuleByName(updatedModuleName);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(thirdFindModuleByNameStage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
-                return module.isPresent() && module.get() != null;
-            });
-        });
-
-        final CompletionStage<Optional<ModuleModel>> updateModuleStatusStage = moduleRepository
-                .updateModuleStatus(existsModuleId, newStatusId);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(updateModuleStatusStage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
-                return module.isPresent() && module.get() != null;
-            });
-        });
-
-        final CompletionStage<List<ModuleModel>> thirdFindModuleByStatusStage = moduleRepository
-                .findAllModulesByStatus(newStatusId);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(thirdFindModuleByStatusStage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
-                return list.size() == 1;
-            });
-        });
-
-        final CompletionStage<List<ModuleModel>> fourthFindModuleByStatusStage = moduleRepository
-                .findAllModulesByStatus(existsStatusId);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(thirdFindModuleByStatusStage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
-                return list.size() == 1;
-            });
-        });
-
-        final CompletionStage<Optional<ModuleModel>> deleteModuleStage = moduleRepository.deleteModule(existsModuleId);
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(deleteModuleStage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
-                return module.isPresent() && module.get() != null;
-            });
-        });
-
-        final CompletionStage<List<ModuleModel>> fourthfindAllModulesStage = moduleRepository.findAllModules();
-        await().atMost(1, TimeUnit.SECONDS).until(() -> {
-            assertThat(fourthfindAllModulesStage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
-                return list.size() == firstExpectedSize;
+                    return list.size() == expectedSize;
+                });
             });
         });
     }
 
+    @Test
+    public void findAllModulesByNotExistsStatus() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<List<ModuleModel>> stage = moduleRepository.findAllModulesByStatus(notExistsStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
+
+                    return list.size() == emptyListSize;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void findAllModulesByExistsStatusId() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<List<ModuleModel>> stage = moduleRepository.findAllModulesByStatus(existsModuleId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(list -> {
+
+                    return list.size() == expectedSize;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void findModuleWithNotExitsStatusId() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository.findModuleById(notExistsModuleId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return !module.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void findModuleByExistsStatus() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository.findModuleById(existsModuleId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return module.isPresent() && module.get() != null;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void findModuleByNotExistsName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository.findModuleByName(notExistsModuleName);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return !module.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void findModuleByExistsName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository.findModuleByName(existsModuleName);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return module.isPresent() && module.get() != null;
+                });
+            });
+        });
+    }
+
+
+    @Test
+    public void createModuleWithExistsName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository
+                    .createModule(existsModuleName, inactiveStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return !module.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void createModuleWithNotExistsStatus() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository
+                    .createModule(newModuleName, notExistsStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return !module.isPresent();
+                });
+            });
+        });
+
+    }
+
+    @Test
+    public void createNewModule() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository
+                    .createModule(newModuleName, inactiveStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return module.isPresent() && module.get() != null;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateModuleNameNotExistsModuleId() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository
+                    .updateModuleName(notExistsModuleId, updatedModuleName);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return !module.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateModuleNameNotExistsName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository
+                    .updateModuleName(existsModuleId, existsModuleName);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return !module.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateModuleName() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository
+                    .updateModuleName(existsModuleId, updatedModuleName);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return module.isPresent() && module.get() != null;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateModuleStatusNotExistsModuleId() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository
+                    .updateModuleStatus(notExistsModuleId, inactiveStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return !module.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateModuleStatusNotExistsStatus() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository
+                    .updateModuleStatus(existsModuleId, notExistsStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return !module.isPresent();
+                });
+            });
+        });
+    }
+
+    @Test
+    public void updateModuleStatus() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository
+                    .updateModuleStatus(existsModuleId, inactiveStatusId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return module.isPresent() && module.get() != null;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void deleteModuleWithNotExistsModuleId() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository.deleteModule(notExistsModuleId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return module.isPresent() && module.get() != null;
+                });
+            });
+        });
+    }
+
+    @Test
+    public void deleteModuleWithExistsModuleId() throws Exception {
+
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            final ModuleRepository moduleRepository = app.injector().instanceOf(ModuleRepository.class);
+            final CompletionStage<Optional<ModuleModel>> stage = moduleRepository.deleteModule(existsModuleId);
+
+            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+
+                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(module -> {
+
+                    return !module.isPresent();
+                });
+            });
+        });
+    }
 }
