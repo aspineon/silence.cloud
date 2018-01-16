@@ -1,0 +1,177 @@
+@(signUpForm: Form[forms.auth.SignUp])
+
+@import helper._
+
+@main("") {
+<!doctype html>
+    <html class="fixed dark">
+        <head>
+
+                <!-- Basic -->
+            <meta charset="UTF-8">
+            <title>Silence On the Wire- załóż konto</title>
+
+            <meta name="keywords" content="Silence On the Wire - załóż konto" />
+            <meta name="description" content="Silence On the Wire - załóż konto">
+            <meta name="author" content="SilenceOntheWire">
+
+            @views.html.auth.authCss()
+
+        </head>
+        <body>
+                <!-- start: page -->
+            <section class="body-sign">
+                <div class="center-sign">
+                    <a href="/" class="logo float-left">
+                        <img src="@routes.Assets.versioned("/")" height="64" alt="SilenceOntheWire" />
+                    </a>
+
+                    <div class="panel card-sign">
+                        <div class="card-title-sign mt-3 text-right">
+                            <h2 class="title text-uppercase font-weight-bold m-0"><i class="fa fa-user mr-1"></i> @Messages("singUp.panel.title")</h2>
+                        </div>
+                        <div class="card-body">
+                        @form(action = controllers.auth.routes.SignUpController.signUpAction()) {
+                            @CSRF.formField
+                            @if(flash().containsKey("danger")){
+                                <div id="signUpDanger" class="alert alert-danger">
+                                @flash.get("danger")
+                                </div>
+                            }
+                            @if(flash().containsKey("warning")){
+                                <div id="signUpWarning" class="alert alert-warning">
+                                @flash.get("warning")
+                                </div>
+                            }
+                            @if(flash().containsKey("success")){
+                                <div id="signUpSuccess" class="alert alert-success">
+                                    <a href="">@flash.get("success")</a>
+                                </div>
+                            }
+                            <div class="form-group mb-3" id="username">
+                                <label>@Messages("signUp.panel.form.username.label")</label>
+                                <div class="input-group input-group-icon">
+                                    <input id="input-username" name="username" type="text" class="form-control form-control-lg" data-plugin-maxlength="" maxlength="255" autocomplete="false" required="required"/>
+                                    <span class="input-group-addon">
+                                        <span class="icon icon-lg">
+                                            <i class="fa fa-user"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3" id="email">
+                                <label>@Messages("signUp.panel.form.email.label")</label>
+                                <div class="input-group input-group-icon">
+                                    <input id="input-email" name="email" type="email" class="form-control form-control-lg" data-plugin-maxlength="" maxlength="255" autocomplete="false" required="required"/>
+                                    <span class="input-group-addon">
+                                        <span class="icon icon-lg">
+                                            <i class="fa fa-envelope"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3" id="phone">
+                                <label>@Messages("signUp.panel.form.phone.label")</label>
+                                <div class="input-group input-group-icon">
+                                    <input id="input-phone" name="phone" data-plugin-masked-input data-input-mask="(+99) 999-999-999" placeholder="(+48) 999-999-999" class="form-control" data-plugin-maxlength="" maxlength="255" autocomplete="false" required="required" />
+                                    <span class="input-group-addon">
+                                        <span class="icon icon-lg">
+                                            <i class="fa fa-phone"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="clearfix">
+                                    <label class="float-left" id="password" class="float-left">@Messages("signUp.panel.form.password.label")</label>
+                                        &nbsp;
+                                    <a class="float-right" href="https://technet.microsoft.com/pl-pl/library/cc786468(v=ws.10).aspx" class="float-right">@Messages("signUp.panel.password.info")</a>
+                                </div>
+                                <div class="input-group input-group-icon">
+                                    <input id="input-password" name="password" type="password" pattern="(?=^.{11,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" class="form-control form-control-lg" data-plugin-maxlength="" maxlength="255" data-plugin-minlength="" minlength="12" autocomplete="false" required="required" />
+                                    <span class="input-group-addon">
+                                        <span class="icon icon-lg">
+                                            <i class="fa fa-lock"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="clearfix">
+                                    <label class="float-left" id="confirmPassword" class="float-left">@Messages("signUp.panel.form.confirmPassword.label")</label>
+                                        &nbsp;
+                                    <a class="float-right" href="" class="float-right">@Messages("signUp.panel.confirmPassword.info")</a>
+                                </div>
+                                <div class="input-group input-group-icon">
+                                    <input id="input-confirm-password" name="confirmPassword" type="password" pattern="(?=^.{11,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" class="form-control form-control-lg" data-plugin-maxlength="" maxlength="255" data-plugin-minlength="" minlength="12" autocomplete="false" required="required" />
+                                    <span class="input-group-addon">
+                                        <span class="icon icon-lg">
+                                            <i class="fa fa-unlock"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="checkbox-custom checkbox-default">
+                                        <input id="pageTerms" name="pageTerms" type="checkbox" autocomplete="false" required="required"/>
+                                        <label id="webpage-terms" for="pageTerms"><a href="/">@Messages("singUp.panel.form.webPageTerms.label")</a></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="checkbox-custom checkbox-default">
+                                        <input id="privacyPolicy" name="privacyPolicy" type="checkbox" autocomplete="false" required="required" />
+                                        <label id="privacy-policy" for="privacyPolicy"><a href="/">@Messages("singUp.panel.form.privacyPolicy.label")</a></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12" id="terms">
+                                    <div class="checkbox-custom checkbox-default">
+                                        <input id="currentTerms" id="terms" name="terms" type="checkbox" autocomplete="false" required="required"/>
+                                        <label for="terms"><a href="/">@Messages("signUp.panel.form.terms.label")</a></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="checkbox-custom checkbox-default" id="software-policy">
+                                        <input id="softwarePolicy" name="softwarePolicy" type="checkbox" autocomplete="false" required="required"/>
+                                        <label for="softwarePolicy"><a href="/">@Messages("signUp.panel.form.softwarePolicy.label")</a></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br />
+                            <div class="row" id="submit">
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn btn-primary col-sm-12">@Messages("signUp.panel.form.submit.label")</button>
+                                </div>
+                            </div>
+
+                            <p class="text-center"><a herf="/">@Messages("signUp.panel.signIn.info")</a></p>
+
+                        }
+                        </div>
+                    </div>
+
+                    <p class="text-center text-muted mt-3 mb-3">&copy; Copyright 2017. All Rights Reserved.</p>
+                </div>
+            </section>
+                <!-- end: page -->
+
+            @views.html.auth.authJs()
+
+        </body>
+    </html>
+}

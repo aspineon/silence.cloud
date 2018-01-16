@@ -1,0 +1,19 @@
+#user sign up
+singUp.panel.title = Create account
+signUp.panel.form.username.label = Enter your firstname and surname
+signUp.panel.form.email.label = Enter your e-mail address
+signUp.panel.form.phone.label = Enter your phone number
+signUp.panel.form.password.label = Enter your password
+signUp.panel.form.confirmPassword.label = Confirm your password
+singUp.panel.form.webPageTerms.label = I accept term of use.
+singUp.panel.form.privacyPolicy.label = I accept privacy policy.
+signUp.panel.form.terms.label = I accept term of use this app.
+signUp.panel.form.softwarePolicy.label = I accept term of use this software. 
+signUp.panel.form.submit.label = Create account
+
+signUp.formError = "Sorry. We have problem. Please fill this form and try again."
+signUp.passwordsMismatch = Passwords mismatch. Please try again.
+signUp.emailExists = E-mail address exists. Please try again.
+signUp.phoneExists = Phone exists. Please try again.
+signUp.success = User has been created.
+signUp.error = User has not been created.

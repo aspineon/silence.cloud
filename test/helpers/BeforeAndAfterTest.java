@@ -14,9 +14,10 @@ import static play.test.Helpers.running;
 
 public class BeforeAndAfterTest extends WithApplication {
 
-    private final DefaultStatuses defaultStatuses = new DefaultStatuses();
-    private final DefaultRoles defaultRoles = new DefaultRoles();
-    private final DefaultModules defaultModules = new DefaultModules();
+    private final DefaultStatuses defaultStatuses   = new DefaultStatuses();
+    private final DefaultRoles defaultRoles         = new DefaultRoles();
+    private final DefaultModules defaultModules     = new DefaultModules();
+    private final DefaultUsers defaultUsers         = new DefaultUsers();
 
     Database database;
 
@@ -37,21 +38,20 @@ public class BeforeAndAfterTest extends WithApplication {
             defaultStatuses.createDefaultStatuses();
             defaultRoles.createRoles();
             defaultModules.createModules();
-
+            defaultUsers.createUsers();
         });
     }
 
     @After
     public void tearDown() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-            running(fakeApplication(inMemoryDatabase("test")), () -> {
-                defaultModules.deleteModules();
-                defaultRoles.deleteRoles();
-                defaultStatuses.deleteDefaultStatuses();
+            defaultUsers.deleteUsers();
+            defaultModules.deleteModules();
+            defaultRoles.deleteRoles();
+            defaultStatuses.deleteDefaultStatuses();
 
-                Evolutions.cleanupEvolutions(database);
-                database.shutdown();
-            });
+            Evolutions.cleanupEvolutions(database);
+            database.shutdown();
         });
     }
 

@@ -1,19 +1,10 @@
-name := """silence.cloud"""
+name := """core"""
 
-version := "1.0.9-SNAPSHOT"
+version  := "1.0.0-SNAPSHOT"
 
-lazy val core = (project in file("modules/core")).enablePlugins(PlayJava, PlayEbean)
-
-lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean).dependsOn(core).aggregate(core)
-
-scalaVersion := "2.12.2"
+lazy val core = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 
 libraryDependencies += guice
-libraryDependencies += ws
-libraryDependencies += jdbc
-libraryDependencies += cacheApi
-libraryDependencies += jcache
-libraryDependencies += javaForms
 libraryDependencies += javaJpa
 libraryDependencies += "org.hibernate" % "hibernate-entitymanager" % "5.2.12.Final"
 

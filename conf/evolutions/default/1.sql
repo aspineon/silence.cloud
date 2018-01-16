@@ -31,6 +31,20 @@ create table status (
   constraint pk_status primary key (id)
 );
 
+create table user (
+  id                            bigint auto_increment not null,
+  created_at                    timestamp,
+  update_at                     timestamp,
+  username                      varchar(255) not null,
+  email                         varchar(255) not null,
+  phone                         varchar(255) not null,
+  is_admin                      boolean default false not null,
+  sha_password                  varbinary(64) not null,
+  constraint uq_user_email unique (email),
+  constraint uq_user_phone unique (phone),
+  constraint pk_user primary key (id)
+);
+
 alter table module add constraint fk_module_status_id foreign key (status_id) references status (id) on delete restrict on update restrict;
 create index ix_module_status_id on module (status_id);
 
@@ -51,4 +65,6 @@ drop table if exists module;
 drop table if exists role;
 
 drop table if exists status;
+
+drop table if exists user;
 

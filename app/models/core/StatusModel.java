@@ -1,6 +1,7 @@
 package models.core;
 
 import io.ebean.Finder;
+import models.core.user.BaseModel;
 import play.data.validation.Constraints;
 
 import javax.persistence.*;
