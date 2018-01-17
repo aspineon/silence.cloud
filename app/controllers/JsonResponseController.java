@@ -6,7 +6,7 @@ import play.mvc.Controller;
 
 public class JsonResponseController extends Controller {
 
-    public ObjectNode buildJsonResponse(String type, String message){
+    public static ObjectNode buildJsonResponse(String type, String message){
 
         ObjectNode wrapper = Json.newObject();
         ObjectNode msg = Json.newObject();

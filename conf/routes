@@ -9,9 +9,15 @@ GET     /count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code
 GET     /message                    controllers.AsyncController.message
 
+#Sign up
 GET     /auth/sign-up               controllers.auth.SignUpController.getSignUpForm()
 POST    /auth/sign-up               controllers.auth.SignUpController.signUpAction()
 POST    /api/auth/sign-up           controllers.auth.SignUpApiController.signUpAction()
+
+#Sign in
+POST    /api/auth/sign-in           controllers.auth.SignInApiController.signInAction()
+GET     /auth/sign-in               controllers.auth.SignInController.signInForm()
+POST    /auth/sign-in               controllers.auth.SignInController.signInAction()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

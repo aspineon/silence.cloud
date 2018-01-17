@@ -11,9 +11,21 @@ signUp.panel.form.terms.label = I accept term of use this app.
 signUp.panel.form.softwarePolicy.label = I accept term of use this software. 
 signUp.panel.form.submit.label = Create account
 
-signUp.formError = "Sorry. We have problem. Please fill this form and try again."
+signUp.formError = Sorry. We have problem. Please fill this form and try again.
 signUp.passwordsMismatch = Passwords mismatch. Please try again.
 signUp.emailExists = E-mail address exists. Please try again.
 signUp.phoneExists = Phone exists. Please try again.
 signUp.success = User has been created.
 signUp.error = User has not been created.
+
+#Sign in
+signIn.panelTitle = Sign in
+signIn.email = Enter your e-mail address or phone number
+signIn.now = Sign in now!
+signIn.notAccountQuestion = Do you have not account?
+signIn.createAccount = Create account now!
+singIn.password = Enter your password
+signIn.formError = Sorry. We have problem. Please fill this form and try again.
+signIn.badEmailOrPassword = Bad email or password. Please try again.
+signIn.badPhoneOrPassword = Bad phone or password. Please try again.
+signIn.success = User logged.

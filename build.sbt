@@ -1,6 +1,6 @@
 name := """silence.cloud"""
 
-version := "1.0.9-SNAPSHOT"
+version := "1.0.10-SNAPSHOT"
 
 lazy val core = (project in file("modules/core")).enablePlugins(PlayJava, PlayEbean)
 
@@ -16,6 +16,8 @@ libraryDependencies += jcache
 libraryDependencies += javaForms
 libraryDependencies += javaJpa
 libraryDependencies += "org.hibernate" % "hibernate-entitymanager" % "5.2.12.Final"
+libraryDependencies += "mysql" % "mysql-connector-java" % "8.0.8-dmr"
+libraryDependencies += "javax.mail" % "javax.mail-api" % "1.6.0"
 
 // Test Database
 libraryDependencies += "com.h2database" % "h2" % "1.4.194"
@@ -39,7 +41,7 @@ inConfig(Test)(PlayEbean.scopedSettings)
 playEbeanModels in Test := Seq("models.*")
 
 javaOptions in Test ++= Seq(
-  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9998",
+  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=3333",
   "-Xms512M",
   "-Xmx1536M",
   "-Xss1M",

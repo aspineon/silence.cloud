@@ -52,7 +52,9 @@ public class SignUpController extends Controller implements UserByEmailFindable,
         Form<SignUp> signUpForm = formFactory.form(SignUp.class).bindFromRequest();
         if(signUpForm.hasErrors()){
             flash("danger", messages.at("signUp.formError"));
-            return CompletableFuture.completedFuture(redirect(controllers.auth.routes.SignUpController.getSignUpForm()));
+            return CompletableFuture.completedFuture(
+                    badRequestAction("danger", messages.at("signUp.formError"))
+            );
         }
 
         SignUp signUp = signUpForm.get();
@@ -60,32 +62,46 @@ public class SignUpController extends Controller implements UserByEmailFindable,
         if(!signUp.password.equals(signUp.confirmPassword)){
 
             flash("warning", messages.at("signUp.passwordsMismatch"));
-            return CompletableFuture.completedFuture(redirect(controllers.auth.routes.SignUpController.getSignUpForm()));
+            return CompletableFuture.completedFuture(
+                    badRequestAction("warning", messages.at("signUp.passwordsMismatch"))
+            );
         }
 
         if(UserByEmailFindable.super.findUserByEmail(signUp.email) != null) {
 
             flash("waring", messages.at("signUp.emailExists"));
-            return CompletableFuture.completedFuture(redirect(controllers.auth.routes.SignUpController.getSignUpForm()));
+            return CompletableFuture.completedFuture(
+                    badRequestAction("warning", messages.at("signUp.emailExists"))
+            );
         }
 
         if(UserByPhoneFindable.super.findUserByPhone(signUp.phone) != null) {
 
             flash("waring", messages.at("signUp.phoneExists"));
-            return CompletableFuture.completedFuture(redirect(controllers.auth.routes.SignUpController.getSignUpForm()));
+            return CompletableFuture.completedFuture(
+                    badRequestAction("warning", messages.at("signUp.phoneExists"))
+            );
         }
 
         return createUserRepository.createUser(createUserModel(signUp)).thenApplyAsync(user -> {
             if(user.isPresent() && user.get() != null) {
                 flash("success", messages.at("signUp.success"));
-                return redirect(controllers.auth.routes.SignUpController.getSignUpForm());
+                return ok(views.html.auth.signUp.render(signUpForm));
             }
 
-            flash("danger", messages.at("signUp.error"));
-            return redirect(controllers.auth.routes.SignUpController.getSignUpForm());
+            return badRequestAction("danger", messages.at("signUp.error"));
         }, executionContext.current());
     }
 
+
+    @AddCSRFToken
+    private Result badRequestAction(String type, String message){
+
+        Form<SignUp> signUpForm = formFactory.form(SignUp.class);
+
+        flash(type, message);
+        return badRequest(views.html.auth.signUp.render(signUpForm));
+    }
 
     /**
      * @param signUp

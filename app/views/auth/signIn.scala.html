@@ -1,0 +1,97 @@
+@(signInForm: Form[forms.auth.SignIn])
+
+@import helper._
+
+@main("") {
+<!doctype html>
+    <html class="fixed dark">
+        <head>
+
+                <!-- Basic -->
+            <meta charset="UTF-8">
+            <title>Silence On the Wire - sign in</title>
+
+            <meta name="keywords" content="Silence On the Wire - sign in" />
+            <meta name="description" content="Silence On the Wire - sign in">
+            <meta name="author" content="SilenceOntheWire">
+
+            @views.html.auth.authCss()
+
+        </head>
+        <body>
+                <!-- start: page -->
+            <section class="body-sign">
+                <div class="center-sign">
+                    <a href="/" class="logo float-left">
+                        <img src="@routes.Assets.versioned("img/logo-ciemne.png")" height="64" alt="SilenceOntheWire" />
+                    </a>
+
+                    <div class="panel card-sign">
+                        <div class="card-title-sign mt-3 text-right">
+                            <h2 class="title text-uppercase font-weight-bold m-0"><i class="fa fa-user mr-1"></i> @Messages("signIn.panelTitle")</h2>
+                        </div>
+                        <div class="card-body">
+                        @form(action = controllers.auth.routes.SignInController.signInAction()) {
+                            @CSRF.formField
+                            @if(flash().containsKey("danger")){
+                                <div id="signInDanger" class="alert alert-danger">
+                                @flash.get("danger")
+                                </div>
+                            }
+                            @if(flash().containsKey("warning")){
+                                <div id="signInWarning" class="alert alert-warning">
+                                @flash.get("warning")
+                                </div>
+                            }
+                            <div class="form-group mb-3" id="email">
+                                <label>@Messages("signIn.email")</label>
+                                <div class="input-group input-group-icon">
+                                    <input id="input-email" name="userdata" type="text" class="form-control form-control-lg" data-plugin-maxlength="" maxlength="255" autocomplete="false" required="required"/>
+                                    <span class="input-group-addon">
+                                        <span class="icon icon-lg">
+                                            <i class="fa fa-envelope"></i>
+                                            <i class="fa fa-phone"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="clearfix">
+                                    <label class="float-left" id="confirmPassword" class="float-left">@Messages("singIn.password")</label>
+                                        &nbsp;
+                                    <a href="/" class="float-right">@Html(Messages("signUp.panel.confirmPassword.info"))</a>
+                                </div>
+                                <div class="input-group input-group-icon">
+                                    <input id="input-password" name="password" type="password" pattern="(?=^.{11,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" class="form-control form-control-lg" data-plugin-maxlength="" maxlength="255" data-plugin-minlength="" minlength="12" autocomplete="false" required="required" />
+                                    <span class="input-group-addon">
+                                        <span class="icon icon-lg">
+                                            <i class="fa fa-unlock"></i>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <br />
+                            <div class="row" id="submit">
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn btn-primary col-sm-12">@Messages("signIn.now")</button>
+                                </div>
+                            </div>
+
+                            <p class="text-center">@Messages("signIn.notAccountQuestion") <a href="@controllers.auth.routes.SignUpController.getSignUpForm()">@Messages("signIn.createAccount")</a></p>
+
+                        }
+                        </div>
+                    </div>
+
+                    <p class="text-center text-muted mt-3 mb-3">&copy; Copyright 2017. All Rights Reserved.</p>
+                </div>
+            </section>
+                <!-- end: page -->
+
+            @views.html.auth.authJs()
+
+        </body>
+    </html>
+}

@@ -1,12 +1,15 @@
 package controllers.auth;
 
-import helpers.BeforeAndAfterTest;
+import models.core.user.UserModel;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import play.mvc.Result;
 import play.test.WithApplication;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +34,24 @@ public class SignUpApiControllerTest extends WithApplication {
     private String notExistsEmail = "john1@doe.com";
     private String notExistsPhone = "000000001";
 
+    @Before
+    public void setUp(){
+        UserModel userModel = new UserModel();
+        userModel.id = System.currentTimeMillis();
+        userModel.updateAt = new Date();
+        userModel.createdAt = new Date();
+        userModel.username = "john doe";
+        userModel.setEmail(existsEmail);
+        userModel.phone = existsPhone;
+        userModel.setPassword(password);
+        userModel.isAdmin = true;
+        userModel.save();
+    }
+
+    @After
+    public void tearDown(){
+        UserModel.FINDER.query().where().eq("email", existsEmail.toLowerCase()).findOne().delete();
+    }
 
     @Test
     public void createUserWithEmptyData(){
