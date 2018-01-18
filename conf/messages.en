@@ -10,6 +10,8 @@ singUp.panel.form.privacyPolicy.label = I accept privacy policy.
 signUp.panel.form.terms.label = I accept term of use this app.
 signUp.panel.form.softwarePolicy.label = I accept term of use this software. 
 signUp.panel.form.submit.label = Create account
+signUp.remindPassword = Not remember your password?
+signUp.microsoftGuidelines = Guidelines for the password
 
 signUp.formError = Sorry. We have problem. Please fill this form and try again.
 signUp.passwordsMismatch = Passwords mismatch. Please try again.
@@ -25,7 +27,24 @@ signIn.now = Sign in now!
 signIn.notAccountQuestion = Do you have not account?
 signIn.createAccount = Create account now!
 singIn.password = Enter your password
+
 signIn.formError = Sorry. We have problem. Please fill this form and try again.
 signIn.badEmailOrPassword = Bad email or password. Please try again.
 signIn.badPhoneOrPassword = Bad phone or password. Please try again.
 signIn.success = User logged.
+
+#Remind password
+
+remindPassword.title = Remind password
+remindPassword.userData = Enter your e-mail or phone number
+remindPassword.submit = Remind password now!
+remindPassword.notAccountQuestion = Do you have not account?
+remindPassword.createAccount = Create account now!
+
+remindPassword.formError = Sorry. We have problem. Please fill this form and try again.
+remindPassword.badEmail = Bad e-mail address. Please try again.
+remindPassword.badPhone = Bad phone number. Please try again.
+remindPassword.success = Password has been updated.
+
+remindPassword.email.title = Silence.Cloud - new password
+remindPassword.email.message = Welcome {0}. Your new password is {1}. After the first login, change the password.

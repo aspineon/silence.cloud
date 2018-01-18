@@ -19,5 +19,10 @@ POST    /api/auth/sign-in           controllers.auth.SignInApiController.signInA
 GET     /auth/sign-in               controllers.auth.SignInController.signInForm()
 POST    /auth/sign-in               controllers.auth.SignInController.signInAction()
 
+#Remind password
+PUT     /api/auth/remind-password   controllers.auth.RemindPasswordApiController.remindPasswordAction()
+GET     /auth/remind-password       controllers.auth.RemindPasswordController.getRemindPasswordForm()
+POST    /auth/remind-password       controllers.auth.RemindPasswordController.remindPasswordAction()
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

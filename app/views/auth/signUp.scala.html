@@ -9,10 +9,10 @@
 
                 <!-- Basic -->
             <meta charset="UTF-8">
-            <title>Silence On the Wire- załóż konto</title>
+            <title>Silence On the Wire - sign up now!</title>
 
-            <meta name="keywords" content="Silence On the Wire - załóż konto" />
-            <meta name="description" content="Silence On the Wire - załóż konto">
+            <meta name="keywords" content="Silence On the Wire - sign up now" />
+            <meta name="description" content="Silence On the Wire - sign up now">
             <meta name="author" content="SilenceOntheWire">
 
             @views.html.auth.authCss()
@@ -88,7 +88,7 @@
                                 <div class="clearfix">
                                     <label class="float-left" id="password" class="float-left">@Messages("signUp.panel.form.password.label")</label>
                                         &nbsp;
-                                    <a class="float-right" href="https://technet.microsoft.com/pl-pl/library/cc786468(v=ws.10).aspx" class="float-right">@Messages("signUp.panel.password.info")</a>
+                                    <a class="float-right" href="https://support.microsoft.com/en-us/help/4026406/microsoft-account-create-a-strong-password" class="float-right">@Messages("signUp.microsoftGuidelines")</a>
                                 </div>
                                 <div class="input-group input-group-icon">
                                     <input id="input-password" name="password" type="password" pattern="(?=^.{11,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" class="form-control form-control-lg" data-plugin-maxlength="" maxlength="255" data-plugin-minlength="" minlength="12" autocomplete="false" required="required" />
@@ -104,7 +104,7 @@
                                 <div class="clearfix">
                                     <label class="float-left" id="confirmPassword" class="float-left">@Messages("signUp.panel.form.confirmPassword.label")</label>
                                         &nbsp;
-                                    <a class="float-right" href="" class="float-right">@Messages("signUp.panel.confirmPassword.info")</a>
+                                    <a class="float-right" href="@controllers.auth.routes.RemindPasswordController.getRemindPasswordForm()" class="float-right">@Messages("signUp.remindPassword")</a>
                                 </div>
                                 <div class="input-group input-group-icon">
                                     <input id="input-confirm-password" name="confirmPassword" type="password" pattern="(?=^.{11,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" class="form-control form-control-lg" data-plugin-maxlength="" maxlength="255" data-plugin-minlength="" minlength="12" autocomplete="false" required="required" />
@@ -159,7 +159,7 @@
                                 </div>
                             </div>
 
-                            <p class="text-center"><a href="/">@Messages("signUp.panel.signIn.info")</a></p>
+                            <p class="text-center"><a href="@controllers.auth.routes.RemindPasswordController.getRemindPasswordForm()">@Messages("signUp.remindPassword")</a></p>
 
                         }
                         </div>
