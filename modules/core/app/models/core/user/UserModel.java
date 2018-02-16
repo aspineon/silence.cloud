@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 /**
  * User model.
@@ -16,6 +17,14 @@ import java.security.NoSuchAlgorithmException;
 @Table(name = "user")
 @Entity
 public class UserModel extends BaseModel {
+
+    @Column(nullable = false, unique = true)
+    @Constraints.Required
+    public UUID uuid;
+
+    @Column(nullable = false, unique = true)
+    @Constraints.Required
+    public String token;
 
     @Column(length = 255, nullable = false, name = "username")
     @Constraints.MaxLength(255)
@@ -71,5 +80,13 @@ public class UserModel extends BaseModel {
     }
 
     public static Finder<Long, UserModel> FINDER = new Finder<>(UserModel.class);
+
+    public void setUuid(){
+        this.uuid = UUID.randomUUID();
+    }
+
+    public void setToken(){
+        this.token = UUID.randomUUID().toString();
+    }
 
 }

@@ -20,7 +20,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 /**
  * repositories.core.ModuleRepository.java
  * <p>
- * All async operations of models.core.ModuleModel.java
+ * All async operations of ModuleModel.java
  */
 public class ModuleRepository implements ModuleRepositoryInterface {
 
