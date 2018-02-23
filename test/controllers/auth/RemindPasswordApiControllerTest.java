@@ -33,16 +33,8 @@ public class RemindPasswordApiControllerTest extends WithApplication {
 
     @Before
     public void setUp(){
-        UserModel userModel = new UserModel();
-        userModel.id = System.currentTimeMillis();
-        userModel.updateAt = new Date();
-        userModel.createdAt = new Date();
-        userModel.username = "john doe";
-        userModel.setEmail(existsEmail);
-        userModel.phone = existsPhone;
-        userModel.setPassword(existsPassword);
-        userModel.isAdmin = true;
-        userModel.save();
+        CreateDefaultUser createDefaultUser = new CreateDefaultUser();
+        createDefaultUser.createDefaultUser();
     }
 
     @After

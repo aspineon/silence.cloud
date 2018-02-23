@@ -35,16 +35,8 @@ public class SignInControllerTest extends WithApplication {
 
     @Before
     public void setUp(){
-        UserModel userModel = new UserModel();
-        userModel.id = System.currentTimeMillis();
-        userModel.updateAt = new Date();
-        userModel.createdAt = new Date();
-        userModel.username = "john doe";
-        userModel.setEmail(existsEmail);
-        userModel.phone = existsPhone;
-        userModel.setPassword(existsPassword);
-        userModel.isAdmin = true;
-        userModel.save();
+        CreateDefaultUser createDefaultUser = new CreateDefaultUser();
+        createDefaultUser.createDefaultUser();
     }
 
     @After
@@ -108,16 +100,7 @@ public class SignInControllerTest extends WithApplication {
         data.put("userdata", existsEmail);
         data.put("password", notExistsPassword);
 
-        result = route(
-                app, addCSRFToken(
-                        fakeRequest().bodyForm(data).method(POST).uri(
-                                controllers.auth.routes.SignInController.signInAction().url()
-                        )
-                )
-        );
-
-        assertThat(result.status()).isEqualTo(BAD_REQUEST);
-        assertThat(result.flash().containsKey("danger")).isTrue();
+        badAction();
     }
 
     @Test
@@ -142,16 +125,7 @@ public class SignInControllerTest extends WithApplication {
         data.put("userdata", notExistsPhone);
         data.put("password", existsPassword);
 
-        result = route(
-                app, addCSRFToken(
-                        fakeRequest().bodyForm(data).method(POST).uri(
-                                controllers.auth.routes.SignInController.signInAction().url()
-                        )
-                )
-        );
-
-        assertThat(result.status()).isEqualTo(BAD_REQUEST);
-        assertThat(result.flash().containsKey("danger")).isTrue();
+        badAction();
     }
 
     @Test
@@ -159,6 +133,11 @@ public class SignInControllerTest extends WithApplication {
 
         data.put("userdata", existsPhone);
         data.put("password", notExistsPassword);
+
+        badAction();
+    }
+
+    private void badAction(){
 
         result = route(
                 app, addCSRFToken(

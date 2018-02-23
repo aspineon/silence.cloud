@@ -4,6 +4,7 @@ import controllers.routes;
 import forms.auth.SignIn;
 import forms.auth.SignUp;
 import helpers.core.user.EmailValidatable;
+import models.core.user.UserModel;
 import play.data.Form;
 import play.data.FormFactory;
 import play.filters.csrf.AddCSRFToken;
@@ -17,6 +18,7 @@ import repositories.core.user.FindUserByEmailAndPasswordRepository;
 import repositories.core.user.FindUserByPhoneAndPasswordRepository;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -24,6 +26,8 @@ import java.util.concurrent.CompletionStage;
  * User sign in controller.
  */
 public class SignInController extends Controller implements EmailValidatable {
+
+    public final String AUTH_TOKEN = "authToken";
 
     private final FindUserByEmailAndPasswordRepository findUserByEmailAndPasswordRepository;
     private final FindUserByPhoneAndPasswordRepository findUserByPhoneAndPasswordRepository;
@@ -88,8 +92,7 @@ public class SignInController extends Controller implements EmailValidatable {
         return findUserByEmailAndPasswordRepository.findUserByEmailAndPassword(signIn.userdata, signIn.password)
                 .thenApplyAsync(user -> {
                     if(user.isPresent() && (user.get().id != null)){
-                        session().put("username", user.get().username);
-                        return redirect(controllers.routes.HomeController.index());
+                        return createSession(user);
                     }
                     return badRequestAction("danger", messages.at("signIn.badEmailOrPassword"));
                 }, executionContext.current());
@@ -106,11 +109,21 @@ public class SignInController extends Controller implements EmailValidatable {
         return findUserByPhoneAndPasswordRepository.findUserByPhoneAndPassword(signIn.userdata, signIn.password)
                 .thenApplyAsync(user -> {
                     if(user.isPresent() && (user.get().id != null)){
-                        session().put("username", user.get().username);
-                        return redirect(controllers.routes.HomeController.index());
+                        return createSession(user);
                     }
                     return badRequestAction("danger", messages.at("signIn.badPhoneOrPassword"));
                 }, executionContext.current());
+    }
+
+    /**
+     * @param user
+     * @return Result ok
+     */
+    private Result createSession(Optional<UserModel> user) {
+        response().setCookie(Http.Cookie.builder(AUTH_TOKEN, user.get().token)
+                .withSecure(ctx().request().secure()).build());
+        session().put("username", user.get().username);
+        return redirect(controllers.routes.HomeController.index());
     }
 
     @AddCSRFToken

@@ -18,12 +18,14 @@ public class BeforeAndAfterTest extends WithApplication {
     private final DefaultRoles defaultRoles         = new DefaultRoles();
     private final DefaultModules defaultModules     = new DefaultModules();
     private final DefaultUsers defaultUsers         = new DefaultUsers();
+    private final DefaultCompany defaultCompany     = new DefaultCompany();
 
     Database database;
 
     @Before
     public void setUp() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
+
             database = Databases.inMemory(
                     "mydatabase",
                     ImmutableMap.of(
@@ -39,12 +41,15 @@ public class BeforeAndAfterTest extends WithApplication {
             defaultRoles.createRoles();
             defaultModules.createModules();
             defaultUsers.createUsers();
+            defaultCompany.createCompanies();
         });
     }
 
     @After
     public void tearDown() throws Exception {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            defaultCompany.deleteCompanies();
             defaultUsers.deleteUsers();
             defaultModules.deleteModules();
             defaultRoles.deleteRoles();

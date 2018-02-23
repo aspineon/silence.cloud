@@ -25,23 +25,14 @@ public class RemindPasswordControllerTest extends WithApplication {
 
     private String existsEmail = "john@doe.com";
     private String existsPhone = "000000000";
-    private String existsPassword = "R3v3l@t104LoA";
 
     private String notExistsEmail = "john1@doe.com";
     private String notExistsPhone = "000000001";
 
     @Before
     public void setUp(){
-        UserModel userModel = new UserModel();
-        userModel.id = System.currentTimeMillis();
-        userModel.updateAt = new Date();
-        userModel.createdAt = new Date();
-        userModel.username = "john doe";
-        userModel.setEmail(existsEmail);
-        userModel.phone = existsPhone;
-        userModel.setPassword(existsPassword);
-        userModel.isAdmin = true;
-        userModel.save();
+        CreateDefaultUser createDefaultUser = new CreateDefaultUser();
+        createDefaultUser.createDefaultUser();
     }
 
     @After

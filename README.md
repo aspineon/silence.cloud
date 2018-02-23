@@ -52,32 +52,32 @@ There are several demonstration files available in this template.
   
 ## Models and cruds
 
- - **models.core.BaseModel.java**
+ - **BaseModel.java**
    
    BaseModel contains only id, createdAt and updatedAt definitions. BaseModel has 
    been annotated a MappedSuperclass.
    
- - **models.core.StatusModel.java**
+ - **StatusModel.java**
    
    StatusModel implements applications statuses.
     
- - **models.core.StatusModelCrud.java**
+ - **StatusModelCrud.java**
  
    StatusModelCrud interface implements sample crud operations of StatusModel.
    
- - **models.core.RoleModel.java**
+ - **RoleModel.java**
   
    RoleModel implements application roles.
    
- - **models.core.RoleModelCrud.java**
+ - **RoleModelCrud.java**
   
    RoleModelCrud interface implements sample crud operatios of RoleModel.
  
- - **models.core.ModuleModel.java**
+ - **ModuleModel.java**
    
    ModuleModel implements application modules.
  
- - **models.core.ModuleModelCrud.java**
+ - **ModuleModelCrud.java**
  
    ModuleModelCrudInterface implements crud operations of ModuleModel.
      

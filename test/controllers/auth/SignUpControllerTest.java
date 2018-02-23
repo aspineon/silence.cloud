@@ -32,16 +32,8 @@ public class SignUpControllerTest extends WithApplication {
 
     @Before
     public void setUp(){
-        UserModel userModel = new UserModel();
-        userModel.id = System.currentTimeMillis();
-        userModel.updateAt = new Date();
-        userModel.createdAt = new Date();
-        userModel.username = "john doe";
-        userModel.setEmail(existsEmail);
-        userModel.phone = existsPhone;
-        userModel.setPassword(password);
-        userModel.isAdmin = true;
-        userModel.save();
+        CreateDefaultUser createDefaultUser = new CreateDefaultUser();
+        createDefaultUser.createDefaultUser();
     }
 
     @After
@@ -65,12 +57,7 @@ public class SignUpControllerTest extends WithApplication {
     @Test
     public void createUser(){
 
-        Map<String, String> data = new HashMap<>();
-        data.put("username", username);
-        data.put("email", notExistsEmail);
-        data.put("phone", notExistsPhone);
-        data.put("password", password);
-        data.put("confirmPassword", password);
+        Map<String, String> data = createDataFromRequest(notExistsEmail, notExistsPhone);
 
         Result result = route(
                 app, addCSRFToken(fakeRequest().bodyForm(data).method(POST)
@@ -91,43 +78,38 @@ public class SignUpControllerTest extends WithApplication {
         data.put("password", password);
         data.put("confirmPassword", badConfirmPassword);
 
-        result = route(
-                app, addCSRFToken(fakeRequest().bodyForm(data).method(POST)
-                        .uri(controllers.auth.routes.SignUpController.signUpAction().url()))
-        );
-
-        assertThat(result.status()).isEqualTo(BAD_REQUEST);
-        assertThat(result.flash().containsKey("warning")).isTrue();
+        warningResultTest(data);
     }
 
     @Test
     public void createUserWithExistsEmail() {
 
-        Map<String, String> data = new HashMap<>();
-        data.put("username", username);
-        data.put("email", existsEmail);
-        data.put("phone", notExistsPhone);
-        data.put("password", password);
-        data.put("confirmPassword", password);
+        Map<String, String> data = createDataFromRequest(existsEmail, notExistsPhone);
 
-        result = route(
-                app, addCSRFToken(fakeRequest().bodyForm(data).method(POST)
-                        .uri(controllers.auth.routes.SignUpController.signUpAction().url()))
-        );
-
-        assertThat(result.status()).isEqualTo(BAD_REQUEST);
-        assertThat(result.flash().containsKey("warning")).isTrue();
+        warningResultTest(data);
     }
 
     @Test
     public void createUserWithExistsPhone() {
 
+        Map<String, String> data = createDataFromRequest(notExistsEmail, existsPhone);
+
+        warningResultTest(data);
+    }
+
+    public Map<String, String> createDataFromRequest(String email, String phone){
+
         Map<String, String> data = new HashMap<>();
         data.put("username", username);
-        data.put("email", notExistsEmail);
-        data.put("phone", existsPhone);
+        data.put("email", email);
+        data.put("phone", phone);
         data.put("password", password);
         data.put("confirmPassword", password);
+
+        return data;
+    }
+
+    public void warningResultTest(Map<String, String> data){
 
         result = route(
                 app, addCSRFToken(fakeRequest().bodyForm(data).method(POST)

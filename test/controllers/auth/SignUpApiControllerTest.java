@@ -36,16 +36,8 @@ public class SignUpApiControllerTest extends WithApplication {
 
     @Before
     public void setUp(){
-        UserModel userModel = new UserModel();
-        userModel.id = System.currentTimeMillis();
-        userModel.updateAt = new Date();
-        userModel.createdAt = new Date();
-        userModel.username = "john doe";
-        userModel.setEmail(existsEmail);
-        userModel.phone = existsPhone;
-        userModel.setPassword(password);
-        userModel.isAdmin = true;
-        userModel.save();
+        CreateDefaultUser createDefaultUser = new CreateDefaultUser();
+        createDefaultUser.createDefaultUser();
     }
 
     @After
@@ -68,12 +60,8 @@ public class SignUpApiControllerTest extends WithApplication {
     @Test
     public void createUser(){
 
-        Map<String, String> data = new HashMap<>();
-        data.put("username", username);
-        data.put("email", notExistsEmail);
-        data.put("phone", notExistsPhone);
-        data.put("password", password);
-        data.put("confirmPassword", password);
+        SignUpControllerTest signUpControllerTest = new SignUpControllerTest();
+        Map<String, String> data = signUpControllerTest.createDataFromRequest(notExistsEmail, notExistsPhone);
 
         Result result = route(
                 app, fakeRequest().bodyForm(data).method(POST)
@@ -104,12 +92,8 @@ public class SignUpApiControllerTest extends WithApplication {
     @Test
     public void createUserWithExistsEmail() {
 
-        Map<String, String> data = new HashMap<>();
-        data.put("username", username);
-        data.put("email", existsEmail);
-        data.put("phone", notExistsPhone);
-        data.put("password", password);
-        data.put("confirmPassword", password);
+        SignUpControllerTest signUpControllerTest = new SignUpControllerTest();
+        Map<String, String> data = signUpControllerTest.createDataFromRequest(existsEmail, notExistsPhone);
 
         Result result = route(
                 app, fakeRequest().bodyForm(data).method(POST)
@@ -122,12 +106,8 @@ public class SignUpApiControllerTest extends WithApplication {
     @Test
     public void createUserWithExistsPhone() {
 
-        Map<String, String> data = new HashMap<>();
-        data.put("username", username);
-        data.put("email", notExistsEmail);
-        data.put("phone", existsPhone);
-        data.put("password", password);
-        data.put("confirmPassword", password);
+        SignUpControllerTest signUpControllerTest = new SignUpControllerTest();
+        Map<String, String> data = signUpControllerTest.createDataFromRequest(notExistsEmail, existsPhone);
 
         Result result = route(
                 app, fakeRequest().bodyForm(data).method(POST)

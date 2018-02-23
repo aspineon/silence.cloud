@@ -1,6 +1,5 @@
 package controllers.auth;
 
-import controllers.auth.routes;
 import forms.auth.SignUp;
 import models.core.user.UserByEmailFindable;
 import models.core.user.UserByPhoneFindable;
@@ -15,13 +14,15 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import repositories.core.user.CreateUserRepository;
+import services.user.CreateUserServiceAbstraction;
+import services.user.CreateUserServiceImplementation;
 
 import javax.inject.Inject;
-import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-public class SignUpController extends Controller implements UserByEmailFindable, UserByPhoneFindable{
+public class SignUpController extends Controller implements UserByEmailFindable, UserByPhoneFindable,
+        CreateUserServiceAbstraction {
 
     private final CreateUserRepository createUserRepository;
     private final FormFactory formFactory;
@@ -83,7 +84,7 @@ public class SignUpController extends Controller implements UserByEmailFindable,
             );
         }
 
-        return createUserRepository.createUser(createUserModel(signUp)).thenApplyAsync(user -> {
+        return createUserRepository.createUser(createUserService(signUp)).thenApplyAsync(user -> {
             if(user.isPresent() && user.get() != null) {
                 flash("success", messages.at("signUp.success"));
                 return ok(views.html.auth.signUp.render(signUpForm));
@@ -107,18 +108,10 @@ public class SignUpController extends Controller implements UserByEmailFindable,
      * @param signUp
      * @return new UserModel
      */
-    private UserModel createUserModel(SignUp signUp){
+    @Override
+    public UserModel createUserService(SignUp signUp){
 
-        UserModel userModel = new UserModel();
-        userModel.id = System.currentTimeMillis();
-        userModel.createdAt = new Date();
-        userModel.updateAt = new Date();
-        userModel.username = signUp.username;
-        userModel.setEmail(signUp.email);
-        userModel.setPassword(signUp.password);
-        userModel.phone = signUp.phone;
-        userModel.isAdmin = true;
-
-        return userModel;
+        CreateUserServiceImplementation createUserServiceImplementation = new CreateUserServiceImplementation();
+        return createUserServiceImplementation.createUserService(signUp);
     }
 }

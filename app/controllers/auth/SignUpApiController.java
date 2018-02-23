@@ -14,6 +14,8 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import repositories.core.user.CreateUserRepository;
+import services.user.CreateUserServiceAbstraction;
+import services.user.CreateUserServiceImplementation;
 
 import javax.inject.Inject;
 import java.util.Date;
@@ -23,7 +25,8 @@ import java.util.concurrent.CompletionStage;
 /**
  * Sign up api.
  */
-public class SignUpApiController extends Controller implements UserByEmailFindable, UserByPhoneFindable {
+public class SignUpApiController extends Controller implements UserByEmailFindable, UserByPhoneFindable,
+        CreateUserServiceAbstraction {
 
     private final CreateUserRepository createUserRepository;
     private final FormFactory formFactory;
@@ -73,7 +76,7 @@ public class SignUpApiController extends Controller implements UserByEmailFindab
             );
         }
 
-        return createUserRepository.createUser(createUserModel(signUp)).thenApplyAsync(user -> {
+        return createUserRepository.createUser(createUserService(signUp)).thenApplyAsync(user -> {
             if(user.isPresent() && (user.get() != null)){
                 return ok(buildJsonResponse("success", messages.at("signUp.success")));
             }
@@ -110,25 +113,6 @@ public class SignUpApiController extends Controller implements UserByEmailFindab
         return false;
     }
 
-    /**
-     * @param signUp
-     * @return new UserModel
-     */
-    private UserModel createUserModel(SignUp signUp){
-
-        UserModel userModel = new UserModel();
-        userModel.id = System.currentTimeMillis();
-        userModel.createdAt = new Date();
-        userModel.updateAt = new Date();
-        userModel.username = signUp.username;
-        userModel.setEmail(signUp.email);
-        userModel.setPassword(signUp.password);
-        userModel.phone = signUp.phone;
-        userModel.isAdmin = true;
-
-        return userModel;
-    }
-
     private ObjectNode buildJsonResponse(String type, String message){
 
         ObjectNode wrapper = Json.newObject();
@@ -136,5 +120,16 @@ public class SignUpApiController extends Controller implements UserByEmailFindab
         msg.put("message", message);
         wrapper.put(type, message);
         return wrapper;
+    }
+
+    /**
+     * @param signUp
+     * @return UserModel new user model
+     */
+    @Override
+    public UserModel createUserService(SignUp signUp) {
+
+        CreateUserServiceImplementation createUserServiceImplementation = new CreateUserServiceImplementation();
+        return createUserServiceImplementation.createUserService(signUp);
     }
 }

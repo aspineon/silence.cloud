@@ -60,16 +60,7 @@ public class CreateUserRepositoryTest extends BeforeAndAfterTest {
 
             final UserModel userModel = createNewUser(existsEmail, newPhone);
 
-            final CreateUserRepository createUserRepository = app.injector().instanceOf(CreateUserRepository.class);
-            final  CompletionStage<Optional<UserModel>> stage = createUserRepository.createUser(userModel);
-
-            await().atMost(1, TimeUnit.SECONDS).until(() -> {
-
-                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(user -> {
-
-                    return !user.isPresent();
-                });
-            });
+            createUser(userModel);
         });
     }
 
@@ -80,15 +71,19 @@ public class CreateUserRepositoryTest extends BeforeAndAfterTest {
 
             final UserModel userModel = createNewUser(newEmail, existsPhone);
 
-            final CreateUserRepository createUserRepository = app.injector().instanceOf(CreateUserRepository.class);
-            final CompletionStage<Optional<UserModel>> stage = createUserRepository.createUser(userModel);
+            createUser(userModel);
+        });
+    }
 
-            await().atMost(1, TimeUnit.SECONDS).until(() -> {
+    private void createUser(UserModel userModel) {
+        final CreateUserRepository createUserRepository = app.injector().instanceOf(CreateUserRepository.class);
+        final CompletionStage<Optional<UserModel>> stage = createUserRepository.createUser(userModel);
 
-                assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(user -> {
+        await().atMost(1, TimeUnit.SECONDS).until(() -> {
 
-                    return !user.isPresent();
-                });
+            assertThat(stage.toCompletableFuture()).isCompletedWithValueMatching(user -> {
+
+                return !user.isPresent();
             });
         });
     }
@@ -105,6 +100,8 @@ public class CreateUserRepositoryTest extends BeforeAndAfterTest {
         userModel.setPassword(password);
         userModel.phone = phone;
         userModel.isAdmin = true;
+        userModel.setToken();
+        userModel.setUuid();
 
         return userModel;
     }

@@ -1,14 +1,14 @@
 package models.core.user;
 
 import io.ebean.Finder;
+import models.core.company.CompanyModel;
 import play.data.validation.Constraints;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -48,6 +48,9 @@ public class UserModel extends BaseModel {
 
     @Column(length = 64, nullable = false)
     private byte[] shaPassword;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    public List<CompanyModel> companies;
 
     /**
      * Set models.core.user email.

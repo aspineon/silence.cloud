@@ -1,11 +1,14 @@
 package controllers.auth;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.JsonResponseController;
 import forms.auth.SignIn;
 import helpers.core.user.EmailValidatable;
+import models.core.user.UserModel;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.Messages;
+import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -14,6 +17,7 @@ import repositories.core.user.FindUserByEmailAndPasswordRepository;
 import repositories.core.user.FindUserByPhoneAndPasswordRepository;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -21,6 +25,8 @@ import java.util.concurrent.CompletionStage;
  * User sign in api controller.
  */
 public class SignInApiController extends Controller implements EmailValidatable {
+
+    public final String AUTH_TOKEN = "authToken";
 
     private final HttpExecutionContext executionContext;
     private final FormFactory formFactory;
@@ -77,12 +83,7 @@ public class SignInApiController extends Controller implements EmailValidatable 
         return findUserByEmailAndPasswordRepository.findUserByEmailAndPassword(signIn.userdata, signIn.password)
                 .thenApplyAsync(user -> {
                     if(user.isPresent() && user.get() != null){
-                        session().put("username", user.get().username);
-                        return ok(
-                                JsonResponseController.buildJsonResponse(
-                                        "success", messages.at("signIn.success")
-                                )
-                        );
+                        return setSession(messages, user);
                     }
                     return badRequest(
                             JsonResponseController.buildJsonResponse(
@@ -103,18 +104,31 @@ public class SignInApiController extends Controller implements EmailValidatable 
         return findUserByPhoneAndPasswordRepository.findUserByPhoneAndPassword(signIn.userdata, signIn.password)
                 .thenApplyAsync(user -> {
                     if(user.isPresent() && user.get() != null){
-                        session().put("username", user.get().username);
-                        return ok(
-                                JsonResponseController.buildJsonResponse(
-                                        "success", messages.at("signIn.success")
-                                )
-                        );
+                        return setSession(messages, user);
                     }
                     return badRequest(
                             JsonResponseController.buildJsonResponse(
-                                    "success", messages.at("signIn.badPhoneOrPassword")
+                                    "", messages.at("signIn.badPhoneOrPassword")
                             )
                     );
                 }, executionContext.current());
+    }
+
+    private Result setSession(Messages messages, Optional<UserModel> user) {
+
+        session().put("username", user.get().username);
+        response().setCookie(Http.Cookie.builder(AUTH_TOKEN, user.get().token)
+                .withSecure(ctx().request().secure()).build());
+
+        return buildResponse(user.get(), messages.at("signIn.success"));
+    }
+
+    private Result buildResponse(UserModel userModel, String message){
+
+        ObjectNode objectNode = Json.newObject();
+        objectNode.put("message", message);
+        objectNode.put("success", true);
+
+        return ok(objectNode);
     }
 }

@@ -98,13 +98,7 @@ public class RemindPasswordController extends Controller implements UserByEmailF
 
         String password = generateRandomPassword(userModel);
 
-        return updateUserRepository.updateUser(userModel).thenApplyAsync(user -> {
-            if(user.isPresent() && (user.get() != null)){
-                flash("success", messages.at("remindPassword.success"));
-                return ok(views.html.auth.remindPassword.render(remindPasswordForm));
-            }
-            return badRequestResult("danger", messages.at("remindPassword.formError"), remindPasswordForm);
-        }, executionContext.current());
+        return updateUserPassword(remindPasswordForm, messages, userModel);
     }
 
     /**
@@ -128,6 +122,10 @@ public class RemindPasswordController extends Controller implements UserByEmailF
 
         String password = generateRandomPassword(userModel);
 
+        return updateUserPassword(remindPasswordForm, messages, userModel);
+    }
+
+    private CompletionStage<Result> updateUserPassword(Form<RemindPassword> remindPasswordForm, Messages messages, UserModel userModel) {
         return updateUserRepository.updateUser(userModel).thenApplyAsync(user -> {
             if(user.isPresent() && (user.get() != null)){
                 flash("success", messages.at("remindPassword.success"));
