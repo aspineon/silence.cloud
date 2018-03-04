@@ -1,6 +1,6 @@
 name := """silence.cloud"""
 
-version := "1.0.13-SNAPSHOT"
+version := "1.0.14-SNAPSHOT"
 
 lazy val core = (project in file("modules/core")).enablePlugins(PlayJava, PlayEbean)
 
