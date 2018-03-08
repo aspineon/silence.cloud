@@ -57,7 +57,7 @@ public class DefaultCompany {
         companyModel.taxNumber          = companyTaxNumber;
         companyModel.isPrimary          = isPrimary;
         companyModel.createdAt          = new Date();
-        companyModel.updateAt           = new Date();
+        companyModel.updatedAt           = new Date();
 
         companyModel.save();
     }

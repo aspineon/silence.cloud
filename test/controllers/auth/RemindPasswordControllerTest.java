@@ -7,7 +7,6 @@ import org.junit.Test;
 import play.mvc.Result;
 import play.test.WithApplication;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

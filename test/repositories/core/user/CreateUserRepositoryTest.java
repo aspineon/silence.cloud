@@ -94,7 +94,7 @@ public class CreateUserRepositoryTest extends BeforeAndAfterTest {
 
         userModel.id = System.currentTimeMillis();
         userModel.createdAt = new Date();
-        userModel.updateAt = new Date();
+        userModel.updatedAt = new Date();
         userModel.username = username;
         userModel.setEmail(email);
         userModel.setPassword(password);

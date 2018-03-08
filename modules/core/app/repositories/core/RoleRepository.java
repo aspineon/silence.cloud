@@ -140,7 +140,7 @@ public class RoleRepository implements RoleRepositoryInterface {
                 roleModel.name = name;
                 roleModel.status = status;
                 roleModel.createdAt = new Date();
-                roleModel.updateAt = new Date();
+                roleModel.updatedAt = new Date();
                 roleModel.save();
                 return Optional.ofNullable(
                         ebeanServer.find(RoleModel.class).where().eq("name", name)
@@ -176,7 +176,7 @@ public class RoleRepository implements RoleRepositoryInterface {
                 if ((currentRole != null) && (existsRole == null)) {
 
                     currentRole.name = name;
-                    currentRole.updateAt = new Date();
+                    currentRole.updatedAt = new Date();
                     ebeanServer.update(currentRole);
                     txn.commit();
                 } else {
@@ -219,7 +219,7 @@ public class RoleRepository implements RoleRepositoryInterface {
                 if ((currentRole != null) && (status != null)) {
 
                     currentRole.status = status;
-                    currentRole.updateAt = new Date();
+                    currentRole.updatedAt = new Date();
                     ebeanServer.update(currentRole);
                     txn.commit();
                 }

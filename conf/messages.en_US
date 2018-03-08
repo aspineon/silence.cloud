@@ -1,0 +1,5 @@
+account.phone.phoneExists = "Sorry. Phone {0} exists. Please try again."
+account.email.emailExists = "Sorry. Email {0} exists. Please try again."
+account.phone.oldAndNewPhoneAreTheSame = "Old and new phones are the same."
+account.email.oldAndNewEmailAreTheSame = "Old and new email are the same."
+account.username.oldAndNewNameAreTheSame = "Old and new usernames are the same."

@@ -1,8 +1,6 @@
 package controllers.auth;
 
-import controllers.routes;
 import forms.auth.SignIn;
-import forms.auth.SignUp;
 import helpers.core.user.EmailValidatable;
 import models.core.user.UserModel;
 import play.data.Form;
@@ -121,8 +119,8 @@ public class SignInController extends Controller implements EmailValidatable {
      */
     private Result createSession(Optional<UserModel> user) {
         response().setCookie(Http.Cookie.builder(AUTH_TOKEN, user.get().token)
-                .withSecure(ctx().request().secure()).build());
-        session().put("username", user.get().username);
+                .withSecure(ctx().request().secure()).withHttpOnly(true).build());
+        session().put("username", user.get().email);
         return redirect(controllers.routes.HomeController.index());
     }
 

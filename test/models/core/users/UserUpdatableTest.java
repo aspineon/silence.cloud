@@ -73,7 +73,7 @@ public class UserUpdatableTest extends BeforeAndAfterTest implements UserUpdatab
         userModel.username = username;
         userModel.setEmail(email);
         userModel.phone = phone;
-        userModel.updateAt = new Date();
+        userModel.updatedAt = new Date();
 
         return userModel;
     }

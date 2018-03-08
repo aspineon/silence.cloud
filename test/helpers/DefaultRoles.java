@@ -67,7 +67,7 @@ public class DefaultRoles {
         roleModel.name = roleName;
         roleModel.status = StatusModel.FINDER.ref(statusId);
         roleModel.createdAt = new Date();
-        roleModel.updateAt = new Date();
+        roleModel.updatedAt = new Date();
         roleModel.save();
     }
 }

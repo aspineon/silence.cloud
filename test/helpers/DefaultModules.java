@@ -31,7 +31,7 @@ public class DefaultModules {
         moduleModel.name = name;
         moduleModel.status = StatusModel.FINDER.ref(statusId);
         moduleModel.createdAt = new Date();
-        moduleModel.updateAt = new Date();
+        moduleModel.updatedAt = new Date();
         moduleModel.save();
     }
 

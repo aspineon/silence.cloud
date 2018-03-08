@@ -29,6 +29,6 @@ public class BaseModel extends Model {
 
     @Constraints.Required
     @Formats.DateTime(pattern = "yyyy/mm/dd")
-    public Date updateAt;
+    public Date updatedAt;
 
 }

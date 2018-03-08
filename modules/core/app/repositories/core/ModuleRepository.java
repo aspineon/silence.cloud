@@ -134,7 +134,7 @@ public class ModuleRepository implements ModuleRepositoryInterface {
                 moduleModel.name = name;
                 moduleModel.status = statusModel;
                 moduleModel.createdAt = new Date();
-                moduleModel.updateAt = new Date();
+                moduleModel.updatedAt = new Date();
                 ebeanServer.insert(moduleModel);
 
                 return Optional.ofNullable(
@@ -170,7 +170,7 @@ public class ModuleRepository implements ModuleRepositoryInterface {
                 if ((moduleModel != null) && (existsModuleModel == null)) {
 
                     moduleModel.name = moduleName;
-                    moduleModel.updateAt = new Date();
+                    moduleModel.updatedAt = new Date();
                     ebeanServer.update(moduleModel);
 
                     txn.commit();
@@ -211,7 +211,7 @@ public class ModuleRepository implements ModuleRepositoryInterface {
                 if ((statusModel != null) && (moduleModel != null)) {
 
                     moduleModel.status = statusModel;
-                    moduleModel.updateAt = new Date();
+                    moduleModel.updatedAt = new Date();
                     ebeanServer.update(moduleModel);
 
                     txn.commit();

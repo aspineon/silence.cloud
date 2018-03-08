@@ -1,3 +1,6 @@
+form.submit = Submit
+form.reset = Reset
+
 #user sign up
 singUp.panel.title = Create account
 signUp.panel.form.username.label = Enter your firstname and surname
@@ -48,3 +51,78 @@ remindPassword.success = Password has been updated.
 
 remindPassword.email.title = Silence.Cloud - new password
 remindPassword.email.message = Welcome {0}. Your new password is {1}. After the first login, change the password.
+
+user.notFound = User not found. Please try again.
+
+account.header = Account
+account.accountData.header = Update account data
+account.accountData.username = Name
+account.accountData.email = Email
+account.accountData.phone = Phone
+account.password.header = Update password
+account.password.oldPassword = Old password
+account.password.newPassword = New password
+account.password.confirmPassword = Confirm password
+
+account.accountHasNotBeenUpdated = Account has not been updated.
+account.accountHasBeenUpdated = Account has been updated.
+
+account.phone.phoneExists = Sorry. Phone {0} exists. Please try again.
+account.email.emailExists = Sorry. Email {0} exists. Please try again.
+account.phone.oldAndNewPhoneAreTheSame = Old and new phones are the same.
+account.email.oldAndNewEmailAreTheSame = Old and new email are the same.
+account.username.oldAndNewNameAreTheSame = Old and new usernames are the same.
+account.isAdmin = Is admin?
+
+account.password.passwordHasNotBeenUpdated = Password has not been updated.
+account.password.badOldPassword = Bad old password. Please try again.
+account.password.passwordsMismatch = Passwords mismatch. Please try again.
+account.password.passwordHasBeenUpdated = Password has been updated.
+
+userAdmin.listOfUsers.header = List of users
+userAdmin.listOfUsers.userId = User id
+userAdmin.listOfUsers.userName = User name
+userAdmin.listOfUsers.userPhone = User phone
+userAdmin.listOfUsers.userEmail = User e-mail
+userAdmin.listOfUsers.isAdmin = Is admin?
+userAdmin.listOfUsers.availableActions = Available actions
+
+userAdmin.addUser.header = Create new user
+userAdmin.addUser.userHasNotBeenCreated = User has not been created. Please try again.
+userAdmin.addUser.userHasBeenCreated = User has been created.
+
+userAdmin.editUser.headerOne = Edit user {0}
+userAdmin.editUser.headerTwo = Edit user
+userAdmin.editUser.editUsername.header = Edit username
+userAdmin.editUser.editEmail.header = Edit e-mail
+userAdmin.editUser.editPhone.header = Edit phone
+userAdmin.editUser.editPassword.header = Edit password
+
+userAdmin.updateUsername.formErrors = There were errors submitting the form with the username. Please try again.
+userAdmin.updateUsername.updateUsernameErrors = There were errors while updating the username. Please try again.
+userAdmin.updateUsername.usernamesAreTheSame = The old and the new user name are identical.
+userAdmin.updateUsername.usernameHasNotBeenUpdated = User name could not be updated. Please try again.
+userAdmin.updateUsername.usernameHasBeenUpdates = The username has been updated successfully.
+
+userAdmin.updateEmail.formErrors = There were errors submitting the form with the email. Please try again.
+userAdmin.updateEmail.updateEmailErrors = There were errors while updating the email. Please try again.
+userAdmin.updateEmail.emailsAreTheSame = Old and new e-mail are the same.
+userAdmin.updateEmail.emailExists = E-mail exists. Please choose other e-mail address.
+userAdmin.updateEmail.updateEmailSuccess = E-mail has been updated.
+
+userAdmin.updatePhone.formErrors = There were errors submitting the form with the phone. Please try again.
+userAdmin.updatePhone.updatePhoneErrors = There were errors while updating the email. Please try again.
+userAdmin.updatePhone.phonesAreTheSame = Old and new phone are the same.
+userAdmin.updatePhone.phoneExists = Phone exists. Please choose other phone address.
+userAdmin.updatePhone.updatePhoneSuccess = Phone has been updated.
+
+userAdmin.updatePassword.formErrors = There were errors submitting the form with the password. Please try again.
+userAdmin.updatePassword.updatePasswordErrors = There were errors while updating the password. Please try again.
+userAdmin.updatePassword.oldAndNewPasswordAreTheSame = Old and new password are the same.
+userAdmin.updatePassword.passwordsMismatch = New and confirm passwords mismatch.
+userAdmin.updatePassword.passwordHasBeenUpdated = Password has been updated.
+userAdmin.updatePassword.passwordHasNotBeenUpdated = Password has not been updated. Please try again.
+
+userAdmin.deleteUser.userNotFound = User not found. Please try again.
+userAdmin.deleteUser.userHasNotBeenDeleted = User has not been deleted. Please try again.
+userAdmin.deleteUser.userHasBeenDeleted = User has been deleted.

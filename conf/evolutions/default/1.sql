@@ -6,7 +6,7 @@
 create table company (
   id                            bigint auto_increment not null,
   created_at                    timestamp,
-  update_at                     timestamp,
+  updated_at                    timestamp,
   company_name                  varchar(255) not null,
   company_phone                 varchar(255) not null,
   company_email                 varchar(255) not null,
@@ -27,7 +27,7 @@ create table company (
 create table module (
   id                            bigint auto_increment not null,
   created_at                    timestamp,
-  update_at                     timestamp,
+  updated_at                    timestamp,
   status_id                     bigint,
   module_name                   varchar(255),
   constraint pk_module primary key (id)
@@ -36,7 +36,7 @@ create table module (
 create table role (
   id                            bigint auto_increment not null,
   created_at                    timestamp,
-  update_at                     timestamp,
+  updated_at                    timestamp,
   status_id                     bigint,
   role_name                     varchar(255) not null,
   constraint uq_role_role_name unique (role_name),
@@ -46,7 +46,7 @@ create table role (
 create table status (
   id                            bigint auto_increment not null,
   created_at                    timestamp,
-  update_at                     timestamp,
+  updated_at                    timestamp,
   status_name                   varchar(255) not null,
   constraint uq_status_status_name unique (status_name),
   constraint pk_status primary key (id)
@@ -55,7 +55,7 @@ create table status (
 create table user (
   id                            bigint auto_increment not null,
   created_at                    timestamp,
-  update_at                     timestamp,
+  updated_at                    timestamp,
   uuid                          uuid not null,
   token                         varchar(255) not null,
   username                      varchar(255) not null,

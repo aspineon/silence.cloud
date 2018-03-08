@@ -13,7 +13,7 @@ public class CreateUserServiceImplementation implements CreateUserServiceAbstrac
         UserModel userModel = new UserModel();
         userModel.id = System.currentTimeMillis();
         userModel.createdAt = new Date();
-        userModel.updateAt = new Date();
+        userModel.updatedAt = new Date();
         userModel.username = signUp.username;
         userModel.setEmail(signUp.email);
         userModel.setPassword(signUp.password);

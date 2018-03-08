@@ -60,7 +60,7 @@
                                 <div class="clearfix">
                                     <label class="float-left" id="confirmPassword" class="float-left">@Messages("singIn.password")</label>
                                         &nbsp;
-                                    <a href="/" class="float-right">@Html(Messages("signUp.panel.confirmPassword.info"))</a>
+                                    <a href="@controllers.auth.routes.RemindPasswordController.getRemindPasswordForm()" class="float-right">@Messages("signUp.remindPassword")</a>
                                 </div>
                                 <div class="input-group input-group-icon">
                                     <input id="input-password" name="password" type="password" pattern="(?=^.{11,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" class="form-control form-control-lg" data-plugin-maxlength="" maxlength="255" data-plugin-minlength="" minlength="12" autocomplete="false" required="required" />

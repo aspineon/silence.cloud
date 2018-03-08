@@ -39,7 +39,7 @@ public class DefaultUsers {
 
         userModel.id = id;
         userModel.createdAt = new Date();
-        userModel.updateAt = new Date();
+        userModel.updatedAt = new Date();
         userModel.username = username;
         userModel.phone = phone;
         userModel.setEmail(email);

@@ -3,26 +3,42 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
+GET     /                                                   controllers.HomeController.index
 # An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
+GET     /count                                              controllers.CountController.count
 # An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+GET     /message                                            controllers.AsyncController.message
 
 #Sign up
-GET     /auth/sign-up               controllers.auth.SignUpController.getSignUpForm()
-POST    /auth/sign-up               controllers.auth.SignUpController.signUpAction()
-POST    /api/auth/sign-up           controllers.auth.SignUpApiController.signUpAction()
+GET     /auth/sign-up                                       controllers.auth.SignUpController.getSignUpForm()
+POST    /auth/sign-up                                       controllers.auth.SignUpController.signUpAction()
+POST    /api/auth/sign-up                                   controllers.auth.SignUpApiController.signUpAction()
 
 #Sign in
-POST    /api/auth/sign-in           controllers.auth.SignInApiController.signInAction()
-GET     /auth/sign-in               controllers.auth.SignInController.signInForm()
-POST    /auth/sign-in               controllers.auth.SignInController.signInAction()
+POST    /api/auth/sign-in                                   controllers.auth.SignInApiController.signInAction()
+GET     /auth/sign-in                                       controllers.auth.SignInController.signInForm()
+POST    /auth/sign-in                                       controllers.auth.SignInController.signInAction()
 
 #Remind password
-PUT     /api/auth/remind-password   controllers.auth.RemindPasswordApiController.remindPasswordAction()
-GET     /auth/remind-password       controllers.auth.RemindPasswordController.getRemindPasswordForm()
-POST    /auth/remind-password       controllers.auth.RemindPasswordController.remindPasswordAction()
+PUT     /api/auth/remind-password                           controllers.auth.RemindPasswordApiController.remindPasswordAction()
+GET     /auth/remind-password                               controllers.auth.RemindPasswordController.getRemindPasswordForm()
+POST    /auth/remind-password                               controllers.auth.RemindPasswordController.remindPasswordAction()
 
+GET     /api/user/account                                   controllers.account.UserApiController.getUser()
+GET     /user/account                                       controllers.account.UserController.getUser()
+POST    /user/account/update-account                        controllers.account.UpdateAccountController.updateAccount()
+PUT     /api/user/account/update-account                    controllers.account.UpdateAccountApiController.updateAccount()
+POST    /user/account/update-password                       controllers.account.UpdatePasswordController.updatePassword()
+
+#User admin
+GET     /user-admin/list-of-users                           controllers.userAdmin.AllUsersController.getAllUsers()
+GET     /user-admin/add-user                                controllers.userAdmin.AddUserController.addUserForm()
+POST    /user-admin/create-user                             controllers.userAdmin.CreateUserController.createUser()
+GET     /user-admin/edit-user/:id                           controllers.userAdmin.EditUserController.editUser(id: Long)
+POST    /user-admin/update-username/:id                     controllers.userAdmin.UpdateUsernameController.updateUsername(id: Long)
+POST    /user-admin/update-email/:id                        controllers.userAdmin.UpdateEmailController.updateEmail(id: Long)
+POST    /user-admin/update-phone/:id                        controllers.userAdmin.UpdatePhoneController.updatePhone(id: Long)
+POST    /user-admin/update-password/:id                     controllers.userAdmin.UpdatePasswordController.updatePassword(id: Long)
+GET     /user-admin/delete-user/:id                         controllers.userAdmin.DeleteUserController.deleteUser(id: Long)
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file                                       controllers.Assets.versioned(path="/public", file: Asset)

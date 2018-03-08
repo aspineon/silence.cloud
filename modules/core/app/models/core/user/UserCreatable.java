@@ -25,7 +25,7 @@ public interface UserCreatable extends UserByEmailFindable, UserByPhoneFindable 
 
             userModel.id = System.currentTimeMillis();
             userModel.createdAt = new Date();
-            userModel.updateAt = new Date();
+            userModel.updatedAt = new Date();
             userModel.save();
 
             return UserModel.FINDER.query().where().eq("username", userModel.username)

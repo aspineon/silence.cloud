@@ -59,7 +59,7 @@ public class UserByIdFindableTest extends BeforeAndAfterTest implements UserById
         assertNotNull(optionalUser.map(user -> user.email));
         assertNotNull(optionalUser.map(user -> user.phone));
         assertNotNull(optionalUser.map(user -> user.createdAt));
-        assertNotNull(optionalUser.map(user -> user.updateAt));
+        assertNotNull(optionalUser.map(user -> user.updatedAt));
     }
 
 

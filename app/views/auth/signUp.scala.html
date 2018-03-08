@@ -45,7 +45,7 @@
                             }
                             @if(flash().containsKey("success")){
                                 <div id="signUpSuccess" class="alert alert-success">
-                                    <a href="">@flash.get("success")</a>
+                                    <a href="@controllers.auth.routes.SignInController.signInForm()">@flash.get("success")</a>
                                 </div>
                             }
                             <div class="form-group mb-3" id="username">

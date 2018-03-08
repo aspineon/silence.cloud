@@ -1,0 +1,231 @@
+@(user: models.core.user.UserModel)
+
+@import helper._
+
+@main(""){
+
+<!doctype html>
+    <html class="fixed dark">
+        <head>
+
+                <!-- Basic -->
+            <meta charset="UTF-8">
+
+            <title></title>
+            <meta name="keywords" content="" />
+            <meta name="description" content="">
+            <meta name="author" content="">
+
+                <!-- Mobile Metas -->
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+                <!-- Web Fonts  -->
+            <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+
+            @helpers.formsHeader()
+
+        </head>
+        <body>
+            <section class="body">
+
+                    <!-- start: header -->
+                <header class="header">
+                    @helpers.adminLogo()
+
+                        <!-- start: search & user box -->
+                    <div class="header-right">
+
+                        @helpers.adminSearchForm()
+
+                        <span class="separator"></span>
+
+                        @helpers.notifications()
+
+                        <span class="separator"></span>
+
+                        @helpers.userbox(user)
+                    </div>
+                        <!-- end: search & user box -->
+                </header>
+                    <!-- end: header -->
+
+                <div class="inner-wrapper">
+
+                    @helpers.navigation(user)
+
+                    <section role="main" class="content-body card-margin">
+                        <header class="page-header">
+                            <h2>@Messages("userAdmin.addUser.header")</h2>
+
+                            <div class="right-wrapper text-right">
+                                <ol class="breadcrumbs">
+                                    <li>
+                                        <a href="/dashboard">
+                                            <i class="fa fa-home"></i>
+                                        </a>
+                                    </li>
+                                    <li><span>@Messages("userAdmin.addUser.header")</span></li>
+                                </ol>
+
+                                <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+                            </div>
+                        </header>
+
+                        <div class="row">
+							<div class="col-lg-12">
+								<section class="card">
+									<header class="card-header">
+										<div class="card-actions">
+											<a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+											<a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+										</div>
+
+										<h2 class="card-title">@Messages("userAdmin.addUser.header")</h2>
+                                        @if(flash.containsKey("danger")){
+                                            <div class="alert alert-danger" role="alert">
+                                                @flash.get("danger")
+                                            </div>
+                                        }
+                                        @if(flash.containsKey("success")){
+                                            <div class="alert alert-success" role="alert">
+                                            @flash.get("success")
+                                            </div>
+                                        }
+									</header>
+                                    <form class="form-horizontal form-bordered form-bordered" action="@controllers.userAdmin.routes.CreateUserController.createUser()" method="post">
+									    <div class="card-body">
+                                            @CSRF.formField
+											<div class="form-group row">
+												<label class="col-lg-3 control-label text-lg-right pt-2" for="username">@Messages("account.accountData.username")</label>
+												<div class="col-lg-6">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-user"></i>
+                                                        </span>
+													    <input id="username" type="text" name="username" class="form-control" data-plugin-maxlength maxlength="255" required />
+                                                    </div>
+                                                    <p>
+														<code>Max length</code> set to 255.
+													</p>
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-lg-3 control-label text-lg-right pt-2" for="email">@Messages("account.accountData.email")</label>
+												<div class="col-lg-6">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-envelope"></i>
+                                                        </span>
+													    <input id="email" type="email" name="email" class="form-control" data-plugin-maxlength maxlength="255" required>
+                                                    </div>
+                                                    <p>
+														<code>Max length</code> set to 255.
+													</p>
+                                                    <p>
+                                                        <code>Pattern</code> set to e-mail.
+                                                    </p>
+												</div>
+                                                <div class="col-lg=9">
+                                                    @if(flash.containsKey("emailWarning")){
+                                                        <div class="alert alert-warning" role="alert">
+                                                            @flash.get("emailWarning")
+                                                        </div>
+                                                    }
+                                                </div>
+											</div>
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 control-label text-lg-right pt-2" for="phone">@Messages("account.accountData.phone")</label>
+                                                <div class="col-lg-6">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-phone"></i>
+                                                        </span>
+                                                        <input id="phone" type="text" name="phone" data-plugin-masked-input data-input-mask="(+99) 999-999-999" class="form-control" data-plugin-maxlength maxlength="255" required>
+                                                    </div>
+                                                    <p>
+                                                        <code>Max length</code> set to 255.
+                                                    </p>
+                                                    <p>
+                                                        <code>Pattern</code> set to (+99) 999-999-999.
+                                                    </p>
+                                                </div>
+                                                <div class="col-lg=9">
+                                                    @if(flash.containsKey("phoneWarning")){
+                                                        <div class="alert alert-warning" role="alert">
+                                                            @flash.get("phoneWarning")
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 control-label text-lg-right pt-2" for="password">@Messages("account.password.newPassword")</label>
+                                                <div class="col-lg-6">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-lock"></i>
+                                                        </span>
+                                                        <input id="password" pattern="(?=^.{11,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" type="password" name="password" class="form-control" data-plugin-maxlength maxlength="255" required autocomplete="off" />
+                                                    </div>
+                                                    <p>
+                                                        <code>Max length</code> set to 255.
+                                                    </p>
+                                                    <p>
+                                                        <code>Password</code> must contains minimum 12 chars, one uppercase letter, one lowercase letter, one number and one special char.
+                                                    </p>
+                                                </div>
+                                                @if(flash.containsKey("confirmPasswordWarning")){
+                                                    <div class="alert alert-warning" role="alert">
+                                                        @flash.get("confirmPasswordWarning")
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 control-label text-lg-right pt-2" for="confirmPassword">@Messages("account.password.confirmPassword")</label>
+                                                <div class="col-lg-6">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-unlock"></i>
+                                                        </span>
+                                                        <input id="confirmPassword" type="password" name="confirmPassword" class="form-control" data-plugin-maxlength maxlength="255" autocomplete="off" required>
+                                                    </div>
+                                                    <p>
+                                                        <code>Max length</code> set to 255.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 control-label text-lg-right pt-2" for="textareaDefault">@Messages("account.isAdmin")</label>
+                                                <div class="col-lg-9">
+                                                    <div class="input-group checkbox-primary">
+                                                        <input type="checkbox" value="true" class="form-control" type="checkbox" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+									    </div>
+                                        <footer class="card-footer text-right">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <button class="btn btn-primary col-sm-3">@Messages("form.submit")</button>
+                                                    <button type="reset" class="btn btn-default col-sm-3">@Messages("form.reset")</button>
+                                                </div>
+                                            </div>
+                                        </footer>
+                                    </form>
+								</section>
+							</div>
+						</div>
+
+                            <!-- end: page -->
+                    </section>
+                </div>
+
+                @helpers.calendar()
+            </section>
+
+            @helpers.formsFooter()
+
+        </body>
+    </html>
+
+}

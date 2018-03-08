@@ -131,7 +131,7 @@ public class CreateNewCompanyImplementationTest extends BeforeAndAfterTest imple
         CompanyModel companyModel       = new CompanyModel();
         companyModel.id                 = this.newCompanyId;
         companyModel.createdAt          = new Date();
-        companyModel.updateAt           = new Date();
+        companyModel.updatedAt           = new Date();
         companyModel.user               = UserModel.FINDER.byId(this.userId);
         companyModel.companyName        = companyName;
         companyModel.companyEmail       = companyEmail;

@@ -110,7 +110,7 @@ public class StatusRepository implements StatusRepositoryInterface {
                 statusModel.id = System.currentTimeMillis();
                 statusModel.name = name;
                 statusModel.createdAt = new Date();
-                statusModel.updateAt = new Date();
+                statusModel.updatedAt = new Date();
                 ebeanServer.insert(statusModel);
 
                 return Optional.ofNullable(ebeanServer.find(StatusModel.class).setId(statusModel.id).findOne());
@@ -142,7 +142,7 @@ public class StatusRepository implements StatusRepositoryInterface {
                 if ((savedStatus != null) && (existsStatusModel == null)) {
 
                     savedStatus.name = name;
-                    savedStatus.updateAt = new Date();
+                    savedStatus.updatedAt = new Date();
                     ebeanServer.update(savedStatus);
 
                     txn.commit();

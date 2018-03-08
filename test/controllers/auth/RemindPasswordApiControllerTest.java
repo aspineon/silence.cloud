@@ -26,7 +26,6 @@ public class RemindPasswordApiControllerTest extends WithApplication {
 
     private String existsEmail = "john@doe.com";
     private String existsPhone = "000000000";
-    private String existsPassword = "R3v3l@t104LoA";
 
     private String notExistsEmail = "john1@doe.com";
     private String notExistsPhone = "000000001";

@@ -56,9 +56,7 @@ public class UpdateUserRepository {
                 ebeanServer.update(userModel);
                 txn.commit();
 
-                optionalUser = ebeanServer.find(UserModel.class).where()
-                        .eq("email", userModel.email.toLowerCase())
-                        .eq("phone", userModel.phone).findOneOrEmpty();
+                optionalUser = ebeanServer.find(UserModel.class).setId(userModel.id).findOneOrEmpty();
             } catch (Exception e) {
 
                 e.printStackTrace();

@@ -1,0 +1,64 @@
+@(user: models.core.user.UserModel)
+
+@import helper._
+
+<div class="row">
+    <div class="col-lg-12">
+        <section class="card">
+            <header class="card-header">
+                <div class="card-actions">
+                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                </div>
+
+                <h2 class="card-title">@Messages("userAdmin.editUser.editPhone.header")</h2>
+                @if(flash.containsKey("phoneDanger")){
+                    <div class="alert alert-danger" role="alert">
+                    @flash.get("phoneDanger")
+                    </div>
+                }
+                @if(flash.containsKey("phoneWarning")){
+                    <div class="alert alert-danger" role="alert">
+                    @flash.get("phoneWarning")
+                    </div>
+                }
+                @if(flash.containsKey("phoneSuccess")){
+                    <div class="alert alert-success" role="alert">
+                    @flash.get("phoneSuccess")
+                    </div>
+                }
+            </header>
+            <form class="form-horizontal form-bordered form-bordered" action="@controllers.userAdmin.routes.UpdatePhoneController.updatePhone(user.id)" method="post">
+                <div class="card-body">
+                    @CSRF.formField
+                    <div class="form-group row">
+                        <label class="col-lg-3 control-label text-lg-right pt-2" for="phone">@Messages("account.accountData.phone")</label>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-phone"></i>
+                                </span>
+                                <input value="@user.phone" id="phone" type="text" name="phone" data-plugin-masked-input data-input-mask="(+99) 999-999-999" class="form-control" data-plugin-maxlength maxlength="255" required>
+                            </div>
+                            <p>
+                                <code>Max length</code> set to 255.
+                            </p>
+                            <p>
+                                <code>Pattern</code> set to (+99) 999-999-999.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+                <footer class="card-footer text-right">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary col-sm-3">@Messages("form.submit")</button>
+                            <button type="reset" class="btn btn-default col-sm-3">@Messages("form.reset")</button>
+                        </div>
+                    </div>
+                </footer>
+            </form>
+        </section>
+    </div>
+</div>

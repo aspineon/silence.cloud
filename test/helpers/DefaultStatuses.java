@@ -45,7 +45,7 @@ public class DefaultStatuses {
         statusModel.id = id;
         statusModel.name = name;
         statusModel.createdAt = new Date();
-        statusModel.updateAt = new Date();
+        statusModel.updatedAt = new Date();
         statusModel.save();
     }
 

@@ -141,7 +141,7 @@ public class RemindPasswordApiController extends Controller implements UserByEma
     private String generateRandomPassword(UserModel userModel) {
         String password = NewPasswordGeneratable.super.generateRandomPassword();
         userModel.setPassword("password");
-        userModel.updateAt = new Date();
+        userModel.updatedAt = new Date();
 
         return password;
     }

@@ -14,7 +14,7 @@ public class CreateDefaultUser {
     public void createDefaultUser() {
         UserModel userModel = new UserModel();
         userModel.id = System.currentTimeMillis();
-        userModel.updateAt = new Date();
+        userModel.updatedAt = new Date();
         userModel.createdAt = new Date();
         userModel.username = "john doe";
         userModel.setEmail(existsEmail);
