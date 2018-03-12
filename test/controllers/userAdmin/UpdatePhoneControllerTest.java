@@ -280,4 +280,28 @@ public class UpdatePhoneControllerTest extends WithApplication {
                 .isEqualTo("Phone has been updated.");
     }
 
+    @Test
+    public void testInactiveUserAdmin(){
+
+        UserModel userModel = UserModel.FINDER.byId(adminId);
+        userModel.isActive = false;
+        userModel.update();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", userModel.email);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("phone", newPhone);
+
+        Result result = route(
+                app, addCSRFToken(
+                        fakeRequest().session(session).bodyForm(data).uri(
+                                controllers.userAdmin.routes.UpdatePhoneController.updatePhone(existsId).url()
+                        ).method(POST)
+                )
+        );
+
+        assertThat(result.status()).isEqualTo(SEE_OTHER);
+    }
+
 }

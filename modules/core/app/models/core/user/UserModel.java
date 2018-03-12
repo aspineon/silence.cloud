@@ -46,8 +46,15 @@ public class UserModel extends BaseModel {
     @Constraints.Required
     public boolean isAdmin;
 
+    @Column(name = "is_active")
+    @Constraints.Required
+    public boolean isActive;
+
     @Column(length = 64, nullable = false)
     private byte[] shaPassword;
+
+    @OneToOne(mappedBy="user",optional = true, cascade = CascadeType.ALL)
+    public TokenModel otpToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     public List<CompanyModel> companies;

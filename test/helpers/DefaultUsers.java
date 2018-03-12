@@ -45,6 +45,7 @@ public class DefaultUsers {
         userModel.setEmail(email);
         userModel.setPassword(password);
         userModel.isAdmin = isAdmin;
+        userModel.isActive = true;
         userModel.setUuid();
         userModel.setToken();
 

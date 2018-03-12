@@ -253,4 +253,28 @@ public class UpdateEmailControllerTest extends WithApplication {
         assertThat(result.flash().get("emailSuccess"))
                 .isEqualTo("E-mail has been updated.");
     }
+
+    @Test
+    public void testUserAdminIsNotActiveEmail(){
+
+        UserModel userModel = UserModel.FINDER.byId(id);
+        userModel.isActive = false;
+        userModel.update();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", userModel.email);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("email", newEmail);
+
+        Result result = route(
+                app, addCSRFToken(
+                        fakeRequest().method(POST).bodyForm(data).uri(
+                                controllers.userAdmin.routes.UpdateEmailController.updateEmail(existsId).url()
+                        ).session(session)
+                )
+        );
+
+        assertThat(result.status()).isEqualTo(SEE_OTHER);
+    }
 }

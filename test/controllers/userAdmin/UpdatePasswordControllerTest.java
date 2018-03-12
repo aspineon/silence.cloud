@@ -283,4 +283,29 @@ public class UpdatePasswordControllerTest extends WithApplication {
         assertThat(result.flash().get("passwordSuccess"))
                 .isEqualTo("Password has been updated.");
     }
+
+    @Test
+    public void userIsNotActive(){
+
+        UserModel userModel = UserModel.FINDER.byId(id);
+        userModel.isActive = false;
+        userModel.update();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", userModel.email);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("password", newPassword);
+        data.put("confirmPassword", newPassword);
+
+        Result result = route(
+                app, addCSRFToken(
+                        fakeRequest().method(POST).bodyForm(data).session(session).uri(
+                                controllers.userAdmin.routes.UpdatePasswordController.updatePassword(existsId).url()
+                        )
+                )
+        );
+
+        assertThat(result.status()).isEqualTo(SEE_OTHER);
+    }
 }

@@ -12,10 +12,12 @@ import play.db.evolutions.Evolutions;
 import play.mvc.Result;
 import play.test.WithApplication;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static play.mvc.Http.Status.OK;
 import static play.mvc.Http.Status.SEE_OTHER;
 import static play.test.Helpers.GET;
 import static play.test.Helpers.fakeRequest;
@@ -144,5 +146,25 @@ public class DeleteUserControllerTest extends WithApplication {
         assertThat(result.status()).isEqualTo(SEE_OTHER);
         assertThat(result.flash().containsKey("success")).isEqualTo(true);
         assertThat(result.flash().get("success")).isEqualTo("User has been deleted.");
+    }
+
+    @Test
+    public void userIsNotActive(){
+
+        UserModel userModel = UserModel.FINDER.byId(id);
+        userModel.isActive = false;
+        userModel.updatedAt = new Date();
+        userModel.save();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", userModel.email);
+
+        Result result = route(
+                app, fakeRequest().session(session).method(GET).uri(
+                        controllers.userAdmin.routes.DeleteUserController.deleteUser(existsId).url()
+                )
+        );
+
+        assertThat(result.status()).isEqualTo(SEE_OTHER);
     }
 }

@@ -121,7 +121,7 @@ public class RemindPasswordController extends Controller implements UserByEmailF
         }
 
         String password = generateRandomPassword(userModel);
-
+        userModel.setPassword(password);
         return updateUserPassword(remindPasswordForm, messages, userModel);
     }
 

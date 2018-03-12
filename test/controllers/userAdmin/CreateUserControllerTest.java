@@ -155,6 +155,34 @@ public class CreateUserControllerTest extends WithApplication {
     }
 
     @Test
+    public void userAdminIsNotActiveTest(){
+
+        UserModel userModel = UserModel.FINDER.byId(id);
+        userModel.isActive = false;
+        userModel.update();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", userModel.email);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("username", newUsername);
+        data.put("email", newEmail);
+        data.put("phone", newPhone);
+        data.put("password", newPassword);
+        data.put("confirmPassword", newPassword);
+
+        Result result = route(
+                app, addCSRFToken(
+                        fakeRequest().bodyForm(data).method(POST).uri(
+                                controllers.userAdmin.routes.CreateUserController.createUser().url()
+                        ).session(session)
+                )
+        );
+
+        assertThat(result.status()).isEqualTo(SEE_OTHER);
+    }
+
+    @Test
     public void createUserWithExistsEmail(){
 
         UserModel userModel = UserModel.FINDER.byId(id);

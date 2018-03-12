@@ -3,6 +3,7 @@ package controllers.account;
 import com.google.common.collect.ImmutableMap;
 
 import helpers.DefaultUsers;
+import models.core.user.UserModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import play.db.evolutions.Evolutions;
 import play.mvc.Result;
 import play.test.WithApplication;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -257,5 +259,30 @@ public class UpdateAccountControllerTest extends WithApplication {
         assertThat(result.status()).isEqualTo(OK);
         assertThat(result.flash().containsKey("success")).isEqualTo(true);
         assertThat(result.flash().get("success")).isEqualTo("Account has been updated.");
+    }
+
+    @Test
+    public void userIsNotActive(){
+
+        UserModel userModel = UserModel.FINDER.query().where().eq("email", firstEmail).findOne();
+        userModel.isActive = false;
+        userModel.updatedAt = new Date();
+        userModel.update();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", firstEmail);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("username", notExistsUserName);
+        data.put("email", notExistsEmail);
+        data.put("phone", notExistsPhone);
+
+        Result result = route(
+                app, addCSRFToken(
+                        fakeRequest().bodyForm(data).method(POST).uri(
+                                routes.UpdateAccountController.updateAccount().url()
+                        ).session(session)
+                )
+        );
     }
 }

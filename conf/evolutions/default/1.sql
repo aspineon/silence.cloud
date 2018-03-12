@@ -52,6 +52,17 @@ create table status (
   constraint pk_status primary key (id)
 );
 
+create table token (
+  id                            bigint auto_increment not null,
+  created_at                    timestamp,
+  updated_at                    timestamp,
+  user_id                       bigint not null,
+  token                         varchar(255) not null,
+  constraint uq_token_user_id unique (user_id),
+  constraint uq_token_token unique (token),
+  constraint pk_token primary key (id)
+);
+
 create table user (
   id                            bigint auto_increment not null,
   created_at                    timestamp,
@@ -62,6 +73,7 @@ create table user (
   email                         varchar(255) not null,
   phone                         varchar(255) not null,
   is_admin                      boolean default false not null,
+  is_active                     boolean default false not null,
   sha_password                  varbinary(64) not null,
   constraint uq_user_uuid unique (uuid),
   constraint uq_user_token unique (token),
@@ -79,6 +91,8 @@ create index ix_module_status_id on module (status_id);
 alter table role add constraint fk_role_status_id foreign key (status_id) references status (id) on delete restrict on update restrict;
 create index ix_role_status_id on role (status_id);
 
+alter table token add constraint fk_token_user_id foreign key (user_id) references user (id) on delete restrict on update restrict;
+
 
 # --- !Downs
 
@@ -91,6 +105,8 @@ drop index if exists ix_module_status_id;
 alter table role drop constraint if exists fk_role_status_id;
 drop index if exists ix_role_status_id;
 
+alter table token drop constraint if exists fk_token_user_id;
+
 drop table if exists company;
 
 drop table if exists module;
@@ -98,6 +114,8 @@ drop table if exists module;
 drop table if exists role;
 
 drop table if exists status;
+
+drop table if exists token;
 
 drop table if exists user;
 

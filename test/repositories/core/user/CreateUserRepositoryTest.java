@@ -100,6 +100,7 @@ public class CreateUserRepositoryTest extends BeforeAndAfterTest {
         userModel.setPassword(password);
         userModel.phone = phone;
         userModel.isAdmin = true;
+        userModel.isActive = true;
         userModel.setToken();
         userModel.setUuid();
 

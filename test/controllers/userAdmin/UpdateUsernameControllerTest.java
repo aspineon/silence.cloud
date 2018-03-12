@@ -217,4 +217,29 @@ public class UpdateUsernameControllerTest extends WithApplication {
         assertThat(result.flash().get("usernameSuccess"))
                 .isEqualTo("The username has been updated successfully.");
     }
+
+    @Test
+    public void inactiveUserAdminAccount() {
+
+        UserModel userModel = UserModel.FINDER.byId(id);
+        userModel.isActive = false;
+        userModel.update();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", userModel.email);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("username", newUsername);
+
+        Result result = route(
+                app, addCSRFToken(
+                        fakeRequest().method(POST).session(session).bodyForm(data).uri(
+                                controllers.userAdmin.routes.UpdateUsernameController.updateUsername(existsId)
+                                        .url()
+                        )
+                )
+        );
+
+        assertThat(result.status()).isEqualTo(SEE_OTHER);
+    }
 }

@@ -21,6 +21,7 @@ public class CreateUserServiceImplementation implements CreateUserServiceAbstrac
         userModel.isAdmin = true;
         userModel.setToken();
         userModel.setUuid();
+        userModel.isActive = false;
 
         return userModel;
     }

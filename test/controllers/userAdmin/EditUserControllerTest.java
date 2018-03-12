@@ -12,6 +12,7 @@ import play.db.evolutions.Evolutions;
 import play.mvc.Result;
 import play.test.WithApplication;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -150,5 +151,26 @@ public class EditUserControllerTest extends WithApplication {
                         controllers.userAdmin.routes.EditUserController.editUser(editUserId).url()
                 ).session(session)
         );
+    }
+
+
+    @Test
+    public void userIsNotActive(){
+
+        UserModel userModel = UserModel.FINDER.byId(id);
+        userModel.isActive = false;
+        userModel.updatedAt = new Date();
+        userModel.save();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", userModel.email);
+
+        Result result = route(
+                app, fakeRequest().method(GET).uri(
+                        controllers.userAdmin.routes.EditUserController.editUser(existsId).url()
+                ).session(session)
+        );
+
+        assertThat(result.status()).isEqualTo(SEE_OTHER);
     }
 }

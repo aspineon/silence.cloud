@@ -60,7 +60,8 @@ public class AccountSecurityController extends Security.Authenticator implements
 
     private Optional<UserModel> checkByToken(String token){
 
-        UserModel user = UserModel.FINDER.query().where().eq("token", token).findOne();
+        UserModel user = UserModel.FINDER.query().where().eq("token", token)
+                .eq("isActive", true).findOne();
         if (user != null) {
 
             user.token = UUID.randomUUID().toString();
@@ -73,14 +74,18 @@ public class AccountSecurityController extends Security.Authenticator implements
     private Optional<UserModel> checkBySession(){
 
         UserModel user = UserByEmailFindable.super.findUserByEmail(session().get("username"));
-        return Optional.ofNullable(user);
+        if((user != null) && user.isActive) {
+
+            return Optional.ofNullable(user);
+        }
+        return Optional.empty();
     }
 
     private Optional<UserModel> checkByCookie(){
 
         UserModel user = UserModel.FINDER.query().where()
                 .eq("token", response().cookie("authToken").get().value()).findOne();
-        if(user != null){
+        if(user != null && user.isActive){
 
             return Optional.ofNullable(user);
         }

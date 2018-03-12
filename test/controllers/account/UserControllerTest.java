@@ -14,6 +14,7 @@ import play.db.evolutions.Evolutions;
 import play.mvc.Result;
 import play.test.WithApplication;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,6 +77,24 @@ public class UserControllerTest extends WithApplication implements UserByIdFinda
 
         Map<String, String> session = new HashMap<>();
         session.put("username", notExistsUsername);
+
+        Result result = route(
+                app, fakeRequest().method(GET).uri(routes.UserController.getUser().url()).session(session)
+        );
+
+        assertThat(result.status()).isEqualTo(SEE_OTHER);
+    }
+
+    @Test
+    public void userIsInactiveTest(){
+
+        UserModel userModel = UserModel.FINDER.byId(userId);
+        userModel.isActive = false;
+        userModel.updatedAt = new Date();
+        userModel.update();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", UserModel.FINDER.byId(userId).email);
 
         Result result = route(
                 app, fakeRequest().method(GET).uri(routes.UserController.getUser().url()).session(session)

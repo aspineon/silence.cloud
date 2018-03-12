@@ -158,6 +158,7 @@ public class CreateUserController extends Controller implements UserByEmailFinda
         }else {
             user.isAdmin = false;
         }
+        user.isActive = false;
         return user;
     }
 }

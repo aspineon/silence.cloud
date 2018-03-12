@@ -60,6 +60,7 @@ public class UserCreatableTest extends BeforeAndAfterTest implements UserCreatab
         userModel.phone = userPhone;
         userModel.setPassword(password);
         userModel.isAdmin = isAdmin;
+        userModel.isActive = true;
         userModel.setUuid();
         userModel.setToken();
 

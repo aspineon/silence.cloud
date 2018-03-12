@@ -152,4 +152,25 @@ public class UpdatePasswordControllerTest extends WithApplication implements Use
         assertThat(result.status()).isEqualTo(OK);
         assertThat(result.flash().get("success")).isEqualTo("Password has been updated.");
     }
+
+    @Test
+    public void userIsInactiveTest(){
+
+        UserModel userModel = UserByIdFindable.super.findUserById(id).get();
+        userModel.isActive = false;
+        userModel.update();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", userModel.email);
+        Map<String, String> data = new HashMap<>();
+        data.put("oldPassword", oldPassword);
+        data.put("newPassword", newPassword);
+        data.put("confirmPassword", newPassword);
+
+        Result result = route(app, addCSRFToken(fakeRequest().method(POST).uri(
+                controllers.account.routes.UpdatePasswordController.updatePassword().url()
+        )).session(session).bodyForm(data));
+
+        assertThat(result.status()).isEqualTo(SEE_OTHER);
+    }
 }

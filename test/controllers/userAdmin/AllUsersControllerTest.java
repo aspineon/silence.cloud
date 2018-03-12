@@ -13,6 +13,7 @@ import play.db.evolutions.Evolutions;
 import play.mvc.Result;
 import play.test.WithApplication;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,5 +106,25 @@ public class AllUsersControllerTest extends WithApplication {
         );
 
         assertThat(result.status()).isEqualTo(OK);
+    }
+
+    @Test
+    public void userIsNotActive(){
+
+        UserModel userModel = UserModel.FINDER.byId(firstId);
+        userModel.isActive = false;
+        userModel.updatedAt = new Date();
+        userModel.save();
+
+        Map<String, String> session = new HashMap<>();
+        session.put("username", userModel.email);
+
+        Result result = route(
+                app, fakeRequest().session(session).uri(
+                        controllers.userAdmin.routes.AllUsersController.getAllUsers().url()
+                )
+        );
+
+        assertThat(result.status()).isEqualTo(SEE_OTHER);
     }
 }
